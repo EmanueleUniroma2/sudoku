@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<!-- title -->
+		<title>Sudoku solver</title>
+
+		<!-- charset -->
+		<meta charset="UTF-8">
+
+		<!-- icon for IOS shortcut -->
+		<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+
+		<!-- disable zoom on mobile devices -->
+		<link rel="icon" href="./favicon.ico">
+
+		<!-- disable zoom on mobile devices -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+    <script type="text/javascript">
+
+      function validateNumber() {
+          var key = window.event ? event.keyCode : event.which;
+          if (event.keyCode == 8 || event.keyCode == 46) {
+              return true;
+          } else if (key < 49 || key > 57) {
+              return false;
+          } else {
+              return true;
+          }
+      };
+
+      function checkBlockValid(values){
+
+        for(let i = 0; i < 9; i++){
+
+          let numbers = [];
+
+          for(let j = 0; j < 9; j++){
+
+            let number = values[j + 9*i][0];
+
+            if(number != 0){
+              if(numbers.indexOf(number) == -1){
+                numbers.push(number);
+              }else{
+                return false;
+              }
+            }
+          }
+        }
+
+        return true;
+
+      }
+
+      function checkRowValid(values){
+
+        /*
+        0 1 2    9  10 11   18 19 20
+        3 4 5    12 13 14   21 22 23
+        6 7 8    15 16 17   24 25 26
+
+        27 28 29   36 37 38   45 46 47
+        30 31 32   39 40 41   48 49 50
+        33 34 35   42 43 44   51 52 53
+
+
+        54 55 56   63 64 65   72 73 74
+        57 58 59   66 67 68   75 76 77
+        60 61 62   69 70 71   78 79 80
+        */
+
+        let rows = [
+          [values[0],values[1],values[2],values[9],values[10],values[11],values[18],values[19],values[20]],
+          [values[3],values[4],values[5],values[12],values[13],values[14],values[21],values[22],values[23]],
+          [values[6],values[7],values[8],values[15],values[16],values[17],values[24],values[25],values[26]],
+          [values[27],values[28],values[29],values[36],values[37],values[38],values[45],values[46],values[47]],
+          [values[30],values[31],values[32],values[39],values[40],values[41],values[48],values[49],values[50]],
+          [values[33],values[34],values[35],values[42],values[43],values[44],values[51],values[52],values[53]],
+          [values[54],values[55],values[56],values[63],values[64],values[65],values[72],values[73],values[74]],
+          [values[57],values[58],values[59],values[66],values[67],values[68],values[75],values[76],values[77]],
+          [values[60],values[61],values[62],values[69],values[70],values[71],values[78],values[79],values[80]]
+        ];
+
+
+        for(let i = 0; i < 9; i++){
+
+          let numbers = [];
+
+          for(let j = 0; j < 9; j++){
+
+            let number = rows[i][j][0];
+
+            if(number != 0){
+              if(numbers.indexOf(number) == -1){
+                numbers.push(number);
+              }else{
+                return false;
+              }
+            }
+          }
+        }
+
+        return true;
+
+      }
+
+      function checkColumnValid(values){
+
+        /*
+        0 1 2    9  10 11   18 19 20
+        3 4 5    12 13 14   21 22 23
+        6 7 8    15 16 17   24 25 26
+
+        27 28 29   36 37 38   45 46 47
+        30 31 32   39 40 41   48 49 50
+        33 34 35   42 43 44   51 52 53
+
+
+        54 55 56   63 64 65   72 73 74
+        57 58 59   66 67 68   75 76 77
+        60 61 62   69 70 71   78 79 80
+        */
+
+        let columns = [
+          [values[0],values[3],values[6],values[27],values[30],values[33],values[54],values[57],values[60]],
+          [values[1],values[4],values[7],values[28],values[31],values[34],values[55],values[58],values[61]],
+          [values[2],values[5],values[8],values[29],values[32],values[35],values[56],values[59],values[62]],
+
+          [values[9],values[12],values[15],values[36],values[39],values[42],values[63],values[66],values[69]],
+          [values[10],values[13],values[16],values[37],values[40],values[43],values[64],values[67],values[70]],
+          [values[11],values[14],values[17],values[38],values[41],values[44],values[65],values[68],values[71]],
+
+          [values[18],values[21],values[24],values[45],values[48],values[51],values[72],values[75],values[78]],
+          [values[19],values[22],values[25],values[46],values[49],values[52],values[73],values[76],values[79]],
+          [values[20],values[23],values[26],values[47],values[50],values[53],values[74],values[77],values[80]]
+        ];
+
+
+        for(let i = 0; i < 9; i++){
+
+          let numbers = [];
+
+          for(let j = 0; j < 9; j++){
+
+            let number = columns[i][j][0];
+
+            if(number != 0){
+              if(numbers.indexOf(number) == -1){
+                numbers.push(number);
+              }else{
+                return false;
+              }
+            }
+          }
+        }
+
+        return true;
+
+      }
+
+      // each 9 elements, we have a new block
+      function sudokuIsValid(values){
+
+        let block_valid = checkBlockValid(values);
+
+        let column_valid = checkColumnValid(values);
+
+        let row_valid = checkRowValid(values);
+
+        return block_valid && column_valid && row_valid;
+      }
+
+      function getSudokuValues(){
+
+        let elements = document.getElementsByTagName("input");
+        let values = [];
+        for(let i = 0; i < elements.length; i++){
+          let v = elements[i].value;
+          values.push([v.length > 0 ? +v : 0, elements[i]]);
+        }
+        return values;
+      }
+
+      function getFirstZeroIndex(values){
+        for(let i = 0; i < values.length; i++){
+          if(values[i][0] == 0){
+            return i;
+          }
+        }
+
+        return -1;
+      }
+
+      function stepUp(values){
+
+        let first_zero_index = getFirstZeroIndex(values);
+
+        if(first_zero_index == -1){
+          sudoku_solution_found();
+          return 1;
+        }
+
+        values[first_zero_index][1].value = 1;
+        return 0;
+      }
+
+      function sudoku_solution_found(){
+        mark_green_cells();
+        document.getElementById("win_label").style.display = "block";
+      }
+
+      function sudoku_has_no_solution(){
+        document.getElementById("err_label").style.display = "block";
+        mark_red_starters();
+      }
+
+      function getStepBackIndex(current_index, values){
+
+        current_index = current_index - 1;
+
+        if(current_index < 0){
+          return -1;
+        }
+
+        while(values[current_index][1].name == "locked"){
+
+          current_index = current_index - 1;
+
+          if(current_index < 0){
+            return -1;
+          }
+        }
+
+        return current_index;
+      }
+
+      function backStep(values){
+
+        let first_zero_index = getFirstZeroIndex(values);
+
+        let first_before_first_zero_index = getStepBackIndex(first_zero_index, values);
+
+        if(first_before_first_zero_index < 0){
+          sudoku_has_no_solution();
+          return 2;
+        }
+
+        while(values[first_before_first_zero_index][0] == 9){
+
+          values[first_before_first_zero_index][0] = 0;
+          values[first_before_first_zero_index][1].value = "";
+
+          first_zero_index = getFirstZeroIndex(values);
+
+          first_before_first_zero_index = getStepBackIndex(first_zero_index, values);
+
+          if(first_before_first_zero_index < 0){
+            sudoku_has_no_solution();
+            return 2;
+          }
+        }
+
+        values[first_before_first_zero_index][1].value = values[first_before_first_zero_index][0] + 1;
+
+        return 0;
+      }
+
+      function solve_inner(){
+
+        let res = 0;
+
+        while(res == 0){
+          let v = getSudokuValues();
+
+          if(sudokuIsValid(v)){
+            res = stepUp(v);
+          }else{
+            res = backStep(v);
+          }
+        }
+      }
+
+      function lock_sudoku_start(){
+
+        let v = getSudokuValues();
+
+        for(let i = 0; i < v.length; i++){
+
+          v[i][1].disabled = true;
+
+          if(v[i][0] != 0){
+            v[i][1].name = "locked";
+            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
+            v[i][1].style.color = "rgb(231, 231, 231)";
+          }else{
+            v[i][1].name = "";
+            v[i][1].style.backgroundColor = "";
+            v[i][1].style.color = "";
+          }
+        }
+
+      }
+
+      function mark_green_cells(){
+        let v = getSudokuValues();
+        for(let i = 0; i < v.length; i++){
+          v[i][1].style.backgroundColor = "rgba(158, 226, 163,0.1)";
+          v[i][1].style.color = "";
+
+          if(v[i][1].name == "locked"){
+            v[i][1].style.backgroundColor = "rgba(74, 152, 80, 0.8)";
+          }
+        }
+      }
+
+      function mark_red_starters(){
+        let v = getSudokuValues();
+        for(let i = 0; i < v.length; i++){
+          if(v[i][1].name == "locked"){
+            v[i][1].style.backgroundColor = "rgb(226, 158, 158)";
+            v[i][1].style.color = "";
+          }
+        }
+      }
+
+
+      function clearSudoku(){
+
+        document.getElementById("err_label").style.display = "none";
+        document.getElementById("win_label").style.display = "none";
+
+
+        let v = getSudokuValues();
+
+        for(let i = 0; i < v.length; i++){
+
+          v[i][1].disabled = false;
+
+          v[i][1].value = "";
+          v[i][1].name = "";
+          v[i][1].style.backgroundColor = "";
+          v[i][1].style.color = "";
+        }
+      }
+
+      function solve(){
+
+        if(getFirstZeroIndex(getSudokuValues()) == -1){
+          return;
+        }
+
+        lock_sudoku_start();
+
+        solve_inner();
+      }
+
+    </script>
+
+		<style type="text/css">
+					body{
+						margin: 0;
+						font-family: Arial;
+						height: 100vh;
+          }
+          .title{
+            margin: 1em;
+            font-size: 1.4em;
+            font-weight: bold;
+          }
+          .sub-title{
+            margin: -1.7em 1.8em;
+            font-size: 0.8em;
+            margin-bottom: 1em;
+            font-weight: bold;
+          }
+          .sudoku-cell{
+            width: 1.5em;
+          }
+          .sudoku-cell-inner{
+            text-align: center;
+            width: 1.4em;
+            line-height: 1.4em;
+          }
+          .sudoku-vert-sep{
+            border-left: 0.4em solid black;
+            height: 1.4em;
+          }
+          .button{
+            border: 0.1em solid rgba(0,0,0,0.3);
+            color: rgba(0,0,0,0.7);
+            border-radius: 0.5em;
+            margin: 0 3em;
+            width: 15em;
+            text-align: center;
+            padding: 0.2em;
+            cursor: pointer;
+            user-select: none;
+            line-height: 1em;
+          }
+          .button:hover{
+            background-color: rgba(0,0,0,0.1);
+          }
+          .button:active{
+            background-color: rgba(0,0,0,0.2);
+          }
+          .win_label{
+            margin: 1em 3em;
+            color: rgb(28, 150, 82);
+            display:none;
+          }
+          .err_label{
+            margin: 1em 3em;
+            color: rgb(209, 51, 51);
+            display:none;
+          }
+		</style>
+	</head>
+
+	<body>
+
+      <div class="title">Fill the sudoku to solve.</div>
+      <div class="sub-title">Be sure to insert a valid sudoku scheme.</div>
+
+      <table style="margin:2em; background-color: rgb(230, 230, 230);">
+        <tr>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <table cellspacing="0">
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+              <tr>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+                <td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();"></div></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <input style="display:none;">
+
+      <div class="err_label" id="err_label">The sudoku has no solution.</div>
+
+      <div class="win_label" id="win_label">Solution found!</div>
+
+
+      <div class="button" onclick="solve();">SOLVE SUDOKU</div>
+      <br>
+      <div class="button" style="margin-top:-0.5em;" onclick="clearSudoku();">CLEAR</div>
+
+
+	</body>
+</html>
