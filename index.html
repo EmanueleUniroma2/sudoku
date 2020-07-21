@@ -643,6 +643,8 @@
 				window.addEventListener("resize", function() {
 						resizePage();
 				}, false);
+
+				document.body.style.opacity = "1";
 			}
 
 			function showPaperMode(){
@@ -669,6 +671,7 @@
 						margin: 0;
 						font-family: Arial;
     				padding-bottom: 2em;
+						opacity: 0;
           }
 					input:disabled{
 						color: black;
