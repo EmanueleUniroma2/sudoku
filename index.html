@@ -330,7 +330,7 @@
           v[i][1].style.color = "";
 
           if(v[i][1].name == "locked"){
-            v[i][1].style.backgroundColor = "rgba(74, 152, 80, 0.8)";
+            v[i][1].style.backgroundColor = "rgba(158, 251, 165, 0.8)";
           }
         }
       }
@@ -458,28 +458,26 @@
 
 						if(v[i][1].name != "locked"){
 
+							let test_passed = false;
+
 							if(similarity=="random"){
 								let res = getRandomInteger(0,100);
-								if(res > 90){
-									v[i][1].disabled = true;
-									v[i][1].name = "locked";
-			            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
-			            v[i][1].style.color = "rgb(231, 231, 231)";
-									v[i][1].value = known_solution[i][0];
-									visibles = visibles - 1;
-								}
+								test_passed = res > 90;
 							}
 
 							if(similarity=="same"){
 								if(known_solution[i][0] == similarDistributionVector[0]){
-									v[i][1].disabled = true;
-									v[i][1].name = "locked";
-			            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
-			            v[i][1].style.color = "rgb(231, 231, 231)";
-									v[i][1].value = known_solution[i][0];
-									visibles = visibles - 1;
 									similarDistributionVector.shift();
+									test_passed = true;
 								}
+							}
+
+							if(test_passed){
+								v[i][1].disabled = true;
+								v[i][1].name = "locked";
+								v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+								v[i][1].value = known_solution[i][0];
+								visibles = visibles - 1;
 							}
 
 							if(visibles <= 0){
@@ -625,8 +623,8 @@
 				if(window.innerWidth < 550){
 					document.body.style.fontSize = "0.9rem";
 				}
-				if(window.innerWidth < 400){
-					document.body.style.fontSize = "0.8rem";
+				if(window.innerWidth < 450){
+					document.body.style.fontSize = "0.75rem";
 				}
 			}
 
@@ -682,12 +680,13 @@
           }
           .sudoku-cell{
             width: 2em;
-						padding: 0.1em;
+						padding: 0.2em;
           }
           .sudoku-cell-inner{
             text-align: center;
             width: 90%;
             line-height: 1.4em;
+						text-weight: bold;
           }
 					.sudoku-cell-inner-pencil{
 						text-align: center;
