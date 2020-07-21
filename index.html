@@ -312,12 +312,10 @@
 
           if(v[i][0] != 0){
             v[i][1].name = "locked";
-            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
-            v[i][1].style.color = "rgb(231, 231, 231)";
+            v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
           }else{
             v[i][1].name = "";
             v[i][1].style.backgroundColor = "";
-            v[i][1].style.color = "";
           }
         }
 
@@ -447,6 +445,10 @@
 				clearSudoku();
 				table.style.display = "";
 
+				toggleHelpButton(true);
+
+				setStatus("solution", known_solution);
+
 				let v = getSudokuValues();
 				let stop = false;
 
@@ -509,7 +511,11 @@
 
       function clearSudoku(){
 
+				toggleHelpButton(false);
+
 				clearDraftBlocks();
+
+				setStatus("solution", null);
 
 				setStatus("can_solve", true);
 
@@ -675,6 +681,39 @@
 				}
 			}
 
+			function toggleHelpButton(toggle){
+
+				let b = document.getElementById("help_button");
+				if(toggle){
+					b.style.opacity = "1";
+					b.style.cursor = "pointer";
+				}else{
+					b.style.opacity = "0.3";
+					b.style.cursor = "unset";
+				}
+			}
+
+			function addOneNumber() {
+				let solution = getStatus("solution");
+				let v = getSudokuValues();
+				if(solution != null){
+
+					let prob = 90;
+
+					while(prob > 10){
+						for(let i = 0; i < v.length; i++){
+							if(getRandomInteger(0,100) > prob && v[i][1].name != "locked" ){
+								v[i][1].value = solution[i][0];
+								v[i][1].name = "locked";
+								v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+								v[i][1].disabled = true;
+								return;
+							}
+						}
+						prob = prob - 10;
+					}
+				}
+			}
 
     </script>
 
@@ -832,6 +871,8 @@
 				<div class="button" style="margin-top:-0.5em;" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
 				<br>
 				<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">TEST CORRECTNESS</div>
+				<br>
+				<div class="button" id="help_button" onclick="addOneNumber();" style="opacity:0.3; cursor:unset;">ADD ONE NUMBER</div>
 				<br>
 				<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
 				<br>
