@@ -392,7 +392,7 @@
 					for(let i = 0; i < v.length; i++){
 						let res = getRandomInteger(0,100);
 
-						if(res > 90){
+						if(res > 90 && v[i][1].name != "locked"){
 							v[i][1].disabled = true;
 							v[i][1].name = "locked";
 	            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
@@ -403,6 +403,7 @@
 
 						if(visibles <= 0){
 							stop = true;
+							break;
 						}
 					}
 				}
