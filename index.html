@@ -562,6 +562,9 @@
 				if(window.innerWidth < 400){
 					document.body.style.fontSize = "0.7rem";
 				}
+				if(window.innerWidth < 370){
+					document.body.style.fontSize = "0.6rem";
+				}
 			}
 
 			function setup(){
@@ -574,8 +577,6 @@
 				window.addEventListener("resize", function() {
 						resizePage();
 				}, false);
-
-				alert(window.innerWidth);
 			}
 
 
