@@ -575,6 +575,21 @@
 				}, false);
 			}
 
+			function showPaperMode(){
+
+				let showDraft = getStatus("show_draft") != false;
+
+				setStatus("show_draft", !showDraft);
+
+				let cells = document.getElementsByClassName("sudoku-cell-inner-pencil");
+				for(let i = 0; i < cells.length; i++){
+					if(showDraft){
+						cells[i].style.display = "block";
+					}else{
+						cells[i].style.display = "none";
+					}
+				}
+			}
 
 
     </script>
@@ -615,6 +630,7 @@
 				    border: 1px solid white;
 				    position: relative;
 						margin: 0.1em;
+						display: none;
 					}
           .sudoku-vert-sep{
             border-left: 0.4em solid black;
@@ -684,6 +700,9 @@
 						margin:2em;
 						background-color: rgb(230, 230, 230);
 					}
+					.paper_mode{
+
+					}
 		</style>
 	</head>
 
@@ -698,15 +717,16 @@
 
 			<input style="display:none;" type="text" id="last_input">
 
+
 			<div class="input_wrap">
 				<div class="select_hint">Visible numbers on new sudoku:</div>
 				<select id="select_for_cells" style="width:10em;"></select>
 			</div>
-
 			<br>
 			<br>
-
-			<div class="button" style="margin-top:-0.5em;" onclick="generate();">NEW SUDOKU</div>
+			<div class="button paper_mode" style="margin-top:-0.5em;" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
+			<br>
+			<div class="button" onclick="generate();">NEW SUDOKU</div>
       <br>
 			<div class="button" id="test_button" onclick="testSudoku();">TEST CORRECTNESS</div>
 			<br>
