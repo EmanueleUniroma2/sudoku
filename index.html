@@ -290,6 +290,11 @@
 
           v[i][1].disabled = true;
 
+					if(v[i][1].name == "reset_me_on_solver"){
+						v[i][0] = 0;
+						v[i][1].value = "";
+					}
+
           if(v[i][0] != 0){
             v[i][1].name = "locked";
             v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
@@ -381,20 +386,37 @@
 
 				let v = getSudokuValues();
 
-				while(1){
+				let stop = false;
+
+				while(!stop){
 					for(let i = 0; i < v.length; i++){
 						let res = getRandomInteger(0,100);
+
 						if(res > 90){
+							v[i][1].disabled = true;
+							v[i][1].name = "locked";
+	            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
+	            v[i][1].style.color = "rgb(231, 231, 231)";
 							v[i][1].value = known_solution[i][0];
 							visibles = visibles - 1;
 						}
 
 						if(visibles <= 0){
-							return;
+							stop = true;
 						}
 					}
 				}
 
+				markCellsAsNonStartes();
+			}
+
+			function markCellsAsNonStartes() {
+				let v = getSudokuValues();
+				for(let i = 0; i < v.length; i++){
+					if(!v[i][1].disabled){
+						v[i][1].name = "reset_me_on_solver";
+					}
+				}
 			}
 
       function clearSudoku(){
@@ -427,6 +449,7 @@
 
         solve_inner();
       }
+
 
 			function initTable(){
 
@@ -465,11 +488,19 @@
 
 				let select = document.getElementById("select_for_cells");
 
+				let index_def_choice = 2;
+
 				for(let i = 7; i < 91; i+= 7){
 
 					let opt = document.createElement("option");
 					opt.value = i;
 					opt.innerHTML = i;
+
+					if(index_def_choice == 0){
+						opt.selected = "true";
+					}
+					index_def_choice = index_def_choice - 1;
+
 					select.appendChild(opt);
 				}
 
@@ -524,7 +555,7 @@
             user-select: none;
             line-height: 1em;
 						display: inline-block;
-						margin-top: 0.5em;
+						margin-top: 1em;
           }
           .button:hover{
             background-color: rgba(0,0,0,0.1);
@@ -542,14 +573,23 @@
             color: rgb(209, 51, 51);
             display:none;
           }
-					.select_wrap{
+					.input_wrap{
 						display: inline-block;
-						margin: 1em 3em;
+						margin: 0.5em 3em;
 					}
 					.select_hint{
 						font-size: 0.8em;
     				opacity: 0.7;
+    				padding-bottom: 0.5em;
 					}
+					.checkbox_hint{
+						display: inline-block;
+				    font-size: 0.8em;
+				    opacity: 0.7;
+				    top: -0.1em;
+				    position: relative;
+					}
+
 		</style>
 	</head>
 
@@ -560,17 +600,18 @@
 
       <table style="margin:2em; background-color: rgb(230, 230, 230);" id="main_table"></table>
 
-      <input style="display:none;" id="last_input">
+      <input style="display:none;" type="text" id="last_input">
 
       <div class="err_label" id="err_label">The sudoku has no solution.</div>
 
       <div class="win_label" id="win_label">Solution found!</div>
 
-			<div class="select_wrap">
+			<div class="input_wrap">
 				<div class="select_hint">Visible numbers on new sudoku:</div>
 				<select id="select_for_cells" style="width:10em;"></select>
 			</div>
 
+			<br>
 			<br>
 
 			<div class="button" style="margin-top:-0.5em;" onclick="generate();">NEW SUDOKU</div>
