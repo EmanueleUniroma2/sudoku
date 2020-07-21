@@ -406,18 +406,20 @@
 
 				let distribution = [];
 
-				while(distribution.length < amount){
+				let max_same = 6;
+
+				while(distribution.length < amount && domain.length > 0){
 
 					let picked = getRandomInteger(0, domain.length);
 
-					let current_amount = getRandomInteger(1, Math.min(amount - distribution.length,9));
+					let current_amount = getRandomInteger(1, Math.min(amount - distribution.length,max_same));
 
 					let element = domain[picked];
 
 					for(let i = 0; i < current_amount; i++){
 						distribution.push(element);
 
-						if(countElementsInList(distribution, element) == 9){
+						if(countElementsInList(distribution, element) == max_same){
 						  domain.splice(domain.indexOf(element), 1);
 							break;
 						}
