@@ -208,11 +208,9 @@
 
       function sudoku_solution_found(){
         mark_green_cells();
-        document.getElementById("win_label").style.display = "block";
       }
 
       function sudoku_has_no_solution(){
-        document.getElementById("err_label").style.display = "block";
         mark_red_starters();
       }
 
@@ -389,7 +387,7 @@
 				let stop = false;
 
 				while(!stop){
-					for(let i = 0; i < v.length; i++){
+					for(let i = 0; i < v.length - 1; i++){
 						let res = getRandomInteger(0,100);
 
 						if(res > 90 && v[i][1].name != "locked"){
@@ -421,9 +419,6 @@
 			}
 
       function clearSudoku(){
-
-        document.getElementById("err_label").style.display = "none";
-        document.getElementById("win_label").style.display = "none";
 
         let v = getSudokuValues();
 
@@ -590,6 +585,13 @@
 				    top: -0.1em;
 				    position: relative;
 					}
+					.version{
+						position: fixed;
+						right: 1em;
+						bottom: 1em;
+						opacity: 0.3;
+						font-size: 0.8em;
+					}
 
 		</style>
 	</head>
@@ -602,10 +604,6 @@
       <table style="margin:2em; background-color: rgb(230, 230, 230);" id="main_table"></table>
 
       <input style="display:none;" type="text" id="last_input">
-
-      <div class="err_label" id="err_label">The sudoku has no solution.</div>
-
-      <div class="win_label" id="win_label">Solution found!</div>
 
 			<div class="input_wrap">
 				<div class="select_hint">Visible numbers on new sudoku:</div>
@@ -621,6 +619,6 @@
 			<br>
       <div class="button" onclick="clearSudoku();">CLEAR</div>
 
-
+			<div class="version">Version 1.1</div>
 	</body>
 </html>
