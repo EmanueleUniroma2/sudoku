@@ -549,11 +549,31 @@
 				}, 1500);
 			}
 
+			function resizePage(){
+
+				document.body.style.fontSize = "1rem";
+
+				if(window.innerWidth < 490){
+					document.body.style.fontSize = "0.9rem";
+				}
+				if(window.innerWidth < 430){
+					document.body.style.fontSize = "0.8rem";
+				}
+				if(window.innerWidth < 400){
+					document.body.style.fontSize = "0.7rem";
+				}
+			}
+
 			function setup(){
 
 				initTable();
 
 				initSelect();
+
+				// Listen for resize changes
+				window.addEventListener("resize", function() {
+						resizePage();
+				}, false);
 			}
 
 
@@ -595,6 +615,7 @@
 				    background-color: #e7e7e7;
 				    border: 1px solid white;
 				    position: relative;
+						margin: 0.1em;
 					}
           .sudoku-vert-sep{
             border-left: 0.4em solid black;
