@@ -500,7 +500,16 @@
 				}
 			}
 
+			function clearDraftBlocks(){
+				let v = document.getElementsByClassName("sudoku-cell-inner-pencil");
+				for(let i = 0; i < v.length; i++){
+						v[i].value = "";
+				}
+			}
+
       function clearSudoku(){
+
+				clearDraftBlocks();
 
 				setStatus("can_solve", true);
 
@@ -542,10 +551,10 @@
 
 				let html_for_inner_row = '<td><div class="sudoku-cell">'+
 																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();" inputmode="numeric">'+
-																 '<input class="sudoku-cell-inner-pencil" maxlength="4" type="text"></div></td>';
+																 '<input class="sudoku-cell-inner-pencil" maxlength="3" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
-																	'	<table cellspacing="0">'+
+																	'	<table cellspacing="5" class="inner_table">'+
 																	'		<tr>';
 
 				let html_for_closed_ineer = '			</tr>'+
@@ -620,14 +629,17 @@
 
 				document.body.style.fontSize = "1rem";
 
-				if(window.innerWidth < 550){
+				if(window.innerWidth < 600){
 					document.body.style.fontSize = "0.85rem";
 				}
-				if(window.innerWidth < 450){
+				if(window.innerWidth < 520){
 					document.body.style.fontSize = "0.7rem";
 				}
-				if(window.innerWidth < 400){
+				if(window.innerWidth < 440){
 					document.body.style.fontSize = "0.65rem";
+				}
+				if(window.innerWidth < 410){
+					document.body.style.fontSize = "0.5rem";
 				}
 			}
 
@@ -697,18 +709,18 @@
             text-align: center;
             width: 90%;
             line-height: 1.4em;
-						text-weight: bold;
+						font-weight: bold;
           }
 					.sudoku-cell-inner-pencil{
 						text-align: center;
-				    width: 90%;
+				    width: 96%;
 				    height: 1em;
 				    line-height: 1.4em;
-				    color: #9b9b9b;
-				    background-color: #e7e7e7;
-				    border: 1px solid white;
+				    color: rgb(77, 77, 77);
+				    background-color: rgb(244, 244, 244);
+				    border: 0.1em solid rgb(162, 162, 162);
 				    position: relative;
-						margin: 0.1em;
+				    margin-top: -0.15em;
 						display: none;
 					}
           .sudoku-vert-sep{
@@ -779,6 +791,9 @@
 						margin:2em;
 						background-color: rgb(230, 230, 230);
 					}
+					.inner_table{
+						margin: 0.4em 0em;
+					}
 					.options_wrapper{
 				    padding: 0.5em;
 				    border: 0.1em solid rgba(0,0,0,0.3);
@@ -816,7 +831,7 @@
 			<div class="buttons_wrapper">
 				<div class="button" style="margin-top:-0.5em;" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
 				<br>
-				<div class="button" id="test_button" onclick="testSudoku();">TEST CORRECTNESS</div>
+				<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">TEST CORRECTNESS</div>
 				<br>
 				<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
 				<br>
@@ -829,11 +844,11 @@
 				<div class="options_title">New sudoku options</div>
 				<div class="input_wrap">
 					<div class="select_hint">Visible numbers:</div>
-					<select id="select_for_cells" style="width:13em;"></select>
+					<select id="select_for_cells" style="width:13em; font-size:1em;"></select>
 				</div>
 				<div class="input_wrap">
 					<div class="select_hint">Numbers variety:</div>
-					<select id="select_for_spread" style="width:13em;">
+					<select id="select_for_spread" style="width:13em; font-size:1em;">
 						<option value="same">Similar (this is easier)</option>
 						<option value="random">Spread (this is harder)</option>
 					</select>
