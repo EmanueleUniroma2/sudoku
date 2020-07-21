@@ -579,13 +579,13 @@
 
 				let index_def_choice = 1;
 
-				let values = [10, 24, 37, 45];
+				let values = [["Hard",15], ["Medium",25], ["Easy",38], ["Beginner",45]];
 
 				for(let i = 0; i < values.length; i++){
 
 					let opt = document.createElement("option");
-					opt.value = values[i];
-					opt.innerHTML = values[i];
+					opt.value = values[i][1];
+					opt.innerHTML = values[i][0];
 
 					if(index_def_choice == 0){
 						opt.selected = "true";
@@ -830,6 +830,6 @@
 				</div>
 			</div>
 
-			<div class="version">Version 1.1.4</div>
+			<div class="version">Version 1.1.5</div>
 	</body>
 </html>
