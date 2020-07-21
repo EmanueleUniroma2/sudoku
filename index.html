@@ -19,6 +19,18 @@
 
     <script type="text/javascript">
 
+			var STATUS = {};
+
+			function setStatus(name, value){
+				STATUS[name] = value;
+			}
+			function getStatus(name){
+				return STATUS[name];
+			}
+			function clearStatus(){
+				STATUS = {};
+			}
+
       function validateNumber() {
           var key = window.event ? event.keyCode : event.which;
           if (event.keyCode == 8 || event.keyCode == 46) {
@@ -420,6 +432,8 @@
 
       function clearSudoku(){
 
+				setStatus("can_solve", true);
+
         let v = getSudokuValues();
 
         for(let i = 0; i < v.length; i++){
@@ -433,10 +447,21 @@
         }
       }
 
+
+			function buttonSolve(){
+
+				let free = getStatus("can_solve") != false;
+				if(free){
+					solve();
+					setStatus("can_solve", false);
+				}
+			}
+
       function solve(){
 
-				document.getElementById("last_input").value = "";
+				let last_input = document.getElementById("last_input");
 
+				last_input.value = "";
         if(getFirstZeroIndex(getSudokuValues()) == -1){
           return;
         }
@@ -615,9 +640,9 @@
 
 			<div class="button" style="margin-top:-0.5em;" onclick="generate();">NEW SUDOKU</div>
       <br>
-			<div class="button" onclick="solve();">SOLVE SUDOKU</div>
+			<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
 			<br>
-      <div class="button" onclick="clearSudoku();">CLEAR</div>
+      <div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
 
 			<div class="version">Version 1.1</div>
 	</body>
