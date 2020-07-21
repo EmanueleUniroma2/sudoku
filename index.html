@@ -33,7 +33,7 @@
 
       function validateNumber() {
           var key = window.event ? event.keyCode : event.which;
-          if (event.keyCode == 8 || event.keyCode == 46) {
+          if (event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 32) {
               return true;
           } else if (key < 49 || key > 57) {
               return false;
@@ -186,12 +186,17 @@
 
       function getSudokuValues(){
 
-        let elements = document.getElementsByTagName("input");
+        let elements = document.getElementsByClassName("sudoku-cell-inner");
         let values = [];
         for(let i = 0; i < elements.length; i++){
           let v = elements[i].value;
-          values.push([v.length > 0 ? +v : 0, elements[i]]);
+					values.push([v.length > 0 ? +v : 0, elements[i]]);
         }
+
+				let f = document.getElementById("last_input");
+				let f_ = f.value;
+				values.push([f_.length > 0 ? + f_ : 0, f]);
+
         return values;
       }
 
@@ -439,7 +444,6 @@
         for(let i = 0; i < v.length; i++){
 
           v[i][1].disabled = false;
-
           v[i][1].value = "";
           v[i][1].name = "";
           v[i][1].style.backgroundColor = "";
@@ -459,12 +463,7 @@
 
       function solve(){
 
-				let last_input = document.getElementById("last_input");
-
-				last_input.value = "";
-        if(getFirstZeroIndex(getSudokuValues()) == -1){
-          return;
-        }
+				document.getElementById("last_input").value = "";
 
         lock_sudoku_start();
 
@@ -476,7 +475,9 @@
 
 				let main_table = document.getElementById("main_table");
 
-				let html_for_inner_row = '<td><div class="sudoku-cell"><input class="sudoku-cell-inner" type="text" inputmode="numeric" maxlength="1" onkeypress="return validateNumber();"></div></td>';
+				let html_for_inner_row = '<td><div class="sudoku-cell">'+
+																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();" inputmode="numeric">'+
+																 '<input class="sudoku-cell-inner-pencil" maxlength="4" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
 																	'	<table cellspacing="0">'+
@@ -524,7 +525,28 @@
 
 					select.appendChild(opt);
 				}
+			}
 
+			function testSudoku(){
+
+				let tb = document.getElementById("test_button");
+
+				if(sudokuIsValid(getSudokuValues())){
+					tb.style.backgroundColor = "rgb(106, 225, 76)";
+					tb.innerHTML = "CORRECT!";
+				}else{
+					tb.style.backgroundColor = "rgb(225, 76, 76)";
+					tb.innerHTML = "WRONG!";
+				}
+
+				tb.onclick = null;
+
+				setTimeout(function(){
+					let tb = document.getElementById("test_button");
+					tb.style.backgroundColor = "";
+					tb.innerHTML = "TEST CORRECTNESS";
+					tb.onclick = testSudoku;
+				}, 1500);
 			}
 
 			function setup(){
@@ -534,12 +556,15 @@
 				initSelect();
 			}
 
+
+
     </script>
 
 		<style type="text/css">
 					body{
 						margin: 0;
 						font-family: Arial;
+    				padding-bottom: 5em;
           }
           .title{
             margin: 1em;
@@ -553,13 +578,24 @@
             font-weight: bold;
           }
           .sudoku-cell{
-            width: 1.5em;
+            width: 2.2em;
+						padding: 0.1em;
           }
           .sudoku-cell-inner{
             text-align: center;
-            width: 1.4em;
+            width: 90%;
             line-height: 1.4em;
           }
+					.sudoku-cell-inner-pencil{
+						text-align: center;
+				    width: 90%;
+				    height: 1em;
+				    line-height: 1.4em;
+				    color: #9b9b9b;
+				    background-color: #e7e7e7;
+				    border: 1px solid white;
+				    position: relative;
+					}
           .sudoku-vert-sep{
             border-left: 0.4em solid black;
             height: 1.4em;
@@ -617,7 +653,17 @@
 						opacity: 0.3;
 						font-size: 0.8em;
 					}
-
+					.table-hint{
+						margin: 0 3em;
+						margin-bottom: -1.8em;
+						font-size: 0.8em;
+						opacity: 0.8;
+						max-width: 35em;
+					}
+					.main_table{
+						margin:2em;
+						background-color: rgb(230, 230, 230);
+					}
 		</style>
 	</head>
 
@@ -626,9 +672,11 @@
       <div class="title">Sudoku Solver.</div>
       <div class="sub-title">Insert a sudoku scheme to solve, or generate a new one to play with.</div>
 
-      <table style="margin:2em; background-color: rgb(230, 230, 230);" id="main_table"></table>
+			<div id="main_table_wrap">
+      	<table class="main_table" id="main_table"></table>
+			</div>
 
-      <input style="display:none;" type="text" id="last_input">
+			<input style="display:none;" type="text" id="last_input">
 
 			<div class="input_wrap">
 				<div class="select_hint">Visible numbers on new sudoku:</div>
@@ -640,10 +688,12 @@
 
 			<div class="button" style="margin-top:-0.5em;" onclick="generate();">NEW SUDOKU</div>
       <br>
+			<div class="button" id="test_button" onclick="testSudoku();">TEST CORRECTNESS</div>
+			<br>
 			<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
 			<br>
       <div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
 
-			<div class="version">Version 1.1</div>
+			<div class="version">Version 1.1.2</div>
 	</body>
 </html>
