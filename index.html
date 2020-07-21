@@ -404,9 +404,9 @@
 
 				let domain = ["1","2","3","4","5","6","7","8","9"];
 
-				let distribution = [];
+				let distribution = ["1","2","3","4","5","6","7","8","9"];
 
-				let max_same = 6;
+				let max_same = 5;
 
 				while(distribution.length < amount && domain.length > 0){
 
@@ -419,8 +419,13 @@
 					for(let i = 0; i < current_amount; i++){
 						distribution.push(element);
 
-						if(countElementsInList(distribution, element) == max_same){
+						if(countElementsInList(distribution, element) >= max_same){
 						  domain.splice(domain.indexOf(element), 1);
+
+							while(countElementsInList(distribution, element) > max_same){
+								distribution.splice(distribution.indexOf(element), 1);
+							}
+
 							break;
 						}
 					}
@@ -825,6 +830,6 @@
 				</div>
 			</div>
 
-			<div class="version">Version 1.1.3</div>
+			<div class="version">Version 1.1.4</div>
 	</body>
 </html>
