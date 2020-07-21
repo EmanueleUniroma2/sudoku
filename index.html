@@ -383,42 +383,102 @@
 				}
 			}
 
+			function countElementsInList(list, element){
+				let c = 0;
+				for(let i = 0; i < list.length; i++){
+					if(list[i] == element){
+						c++;
+					}
+				}
+				return c;
+			}
+
+			function testAllNumbers(distribution){
+				let domain = ["1","2","3","4","5","6","7","8","9"];
+				for(let i = 0; i < domain.length; i++){
+					console.log(domain[i], countElementsInList(distribution, domain[i]));
+				}
+			}
+
+			function similarDistribution(amount){
+
+				let domain = ["1","2","3","4","5","6","7","8","9"];
+
+				let distribution = [];
+
+				while(distribution.length < amount){
+
+					let picked = getRandomInteger(0, domain.length);
+
+					let current_amount = getRandomInteger(1, Math.min(amount - distribution.length,9));
+
+					let element = domain[picked];
+
+					for(let i = 0; i < current_amount; i++){
+						distribution.push(element);
+
+						if(countElementsInList(distribution, element) == 9){
+						  domain.splice(domain.indexOf(element), 1);
+							break;
+						}
+					}
+				}
+				return distribution;
+			}
+
 			function generate(){
 
 				let visibles = +document.getElementById("select_for_cells").value;
-
+				let similarity = document.getElementById("select_for_spread").value;
 				let table = document.getElementById("main_table");
 
 				table.style.display = "none";
-
 				newSudoku();
 
 				let known_solution = getSudokuValues();
 
 				clearSudoku();
-
 				table.style.display = "";
 
 				let v = getSudokuValues();
-
 				let stop = false;
 
+				let similarDistributionVector = similarDistribution(visibles);
+
 				while(!stop){
+
 					for(let i = 0; i < v.length - 1; i++){
-						let res = getRandomInteger(0,100);
 
-						if(res > 90 && v[i][1].name != "locked"){
-							v[i][1].disabled = true;
-							v[i][1].name = "locked";
-	            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
-	            v[i][1].style.color = "rgb(231, 231, 231)";
-							v[i][1].value = known_solution[i][0];
-							visibles = visibles - 1;
-						}
+						if(v[i][1].name != "locked"){
 
-						if(visibles <= 0){
-							stop = true;
-							break;
+							if(similarity=="random"){
+								let res = getRandomInteger(0,100);
+								if(res > 90){
+									v[i][1].disabled = true;
+									v[i][1].name = "locked";
+			            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
+			            v[i][1].style.color = "rgb(231, 231, 231)";
+									v[i][1].value = known_solution[i][0];
+									visibles = visibles - 1;
+								}
+							}
+
+							if(similarity=="same"){
+								if(known_solution[i][0] == similarDistributionVector[0]){
+									v[i][1].disabled = true;
+									v[i][1].name = "locked";
+			            v[i][1].style.backgroundColor = "rgb(123, 123, 123)";
+			            v[i][1].style.color = "rgb(231, 231, 231)";
+									v[i][1].value = known_solution[i][0];
+									visibles = visibles - 1;
+									similarDistributionVector.shift();
+								}
+							}
+
+							if(visibles <= 0){
+								stop = true;
+								break;
+							}
 						}
 					}
 				}
@@ -510,13 +570,15 @@
 
 				let select = document.getElementById("select_for_cells");
 
-				let index_def_choice = 3;
+				let index_def_choice = 1;
 
-				for(let i = 7; i < 91; i+= 7){
+				let values = [10, 24, 37, 45];
+
+				for(let i = 0; i < values.length; i++){
 
 					let opt = document.createElement("option");
-					opt.value = i;
-					opt.innerHTML = i;
+					opt.value = values[i];
+					opt.innerHTML = values[i];
 
 					if(index_def_choice == 0){
 						opt.selected = "true";
@@ -668,7 +730,7 @@
           }
 					.input_wrap{
 						display: inline-block;
-						margin: 0.5em 3em;
+						margin: 0.5em 1em;
 					}
 					.select_hint{
 						font-size: 0.8em;
@@ -700,8 +762,25 @@
 						margin:2em;
 						background-color: rgb(230, 230, 230);
 					}
-					.paper_mode{
-
+					.options_wrapper{
+				    padding: 0.5em;
+				    border: 0.1em solid rgba(0,0,0,0.3);
+				    border-radius: 0.5em;
+				    width: 13em;
+						display: inline-block;
+						margin: 1em 3em;
+					}
+					.options_title{
+						opacity: 0.8;
+						font-size: 0.9em;
+					}
+					.buttons_wrapper{
+						display: inline-block;
+					}
+					.new_sudoku_button{
+						margin: 0.2em;
+						width: 12em;
+						margin-bottom: 1em;
 					}
 		</style>
 	</head>
@@ -717,22 +796,32 @@
 
 			<input style="display:none;" type="text" id="last_input">
 
-
-			<div class="input_wrap">
-				<div class="select_hint">Visible numbers on new sudoku:</div>
-				<select id="select_for_cells" style="width:10em;"></select>
+			<div class="buttons_wrapper">
+				<div class="button" style="margin-top:-0.5em;" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
+				<br>
+				<div class="button" id="test_button" onclick="testSudoku();">TEST CORRECTNESS</div>
+				<br>
+				<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
+				<br>
+	      <div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
 			</div>
-			<br>
-			<br>
-			<div class="button paper_mode" style="margin-top:-0.5em;" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
-			<br>
-			<div class="button" onclick="generate();">NEW SUDOKU</div>
-      <br>
-			<div class="button" id="test_button" onclick="testSudoku();">TEST CORRECTNESS</div>
-			<br>
-			<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
-			<br>
-      <div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
+
+			<div class="options_wrapper">
+				<div class="button new_sudoku_button" onclick="generate();">NEW SUDOKU</div>
+				<br>
+				<div class="options_title">New sudoku options</div>
+				<div class="input_wrap">
+					<div class="select_hint">Visible numbers:</div>
+					<select id="select_for_cells" style="width:13em;"></select>
+				</div>
+				<div class="input_wrap">
+					<div class="select_hint">Numbers variety:</div>
+					<select id="select_for_spread" style="width:13em;">
+						<option value="same">Similar (this is easier)</option>
+						<option value="random">Spread (this is harder)</option>
+					</select>
+				</div>
+			</div>
 
 			<div class="version">Version 1.1.3</div>
 	</body>
