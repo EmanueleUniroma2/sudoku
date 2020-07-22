@@ -498,6 +498,8 @@
 				}
 
 				markCellsAsNonStartes();
+
+				saveCurrentSudoku();
 			}
 
 			function markCellsAsNonStartes() {
@@ -594,6 +596,10 @@
 					evidenceSameNumbers(number);
 				}
 
+				saveCurrentSudoku();
+			}
+
+			function saveCurrentSudoku(){
 				let v = getSudokuValues();
 				let stats = [];
 				for(let i = 0; i < v.length-1; i++){
@@ -632,7 +638,6 @@
 				}
 
 				let values = localStorage.getItem("saved_sudoku");
-
 				if(values != null){
 					let parsed = JSON.parse(values);
 
