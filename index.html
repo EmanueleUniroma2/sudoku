@@ -687,8 +687,7 @@
 
 				let html_for_closed_ineer = '			</tr>'+
 																		'		</table>'+
-																		'	</td>'+
-																		'<td>';
+																		'</td>';
 
 				let html_for_inner_row_separator = "</tr><tr>";
 
@@ -701,7 +700,7 @@
 				}
 				html_for_inner_table += html_for_closed_ineer;
 
-				let html_main_table_row = "<tr><td>" + html_for_inner_table + "</td><td>" + html_for_inner_table + "</td><td>" + html_for_inner_table + "</td></tr>";
+				let html_main_table_row = "<tr>" + html_for_inner_table + html_for_inner_table + html_for_inner_table + "</tr>";
 
 				for(let i = 0; i < 3; i++){
 					main_table.innerHTML += html_main_table_row;
@@ -858,7 +857,7 @@
 					return;
 				}
 				clearInterval(getStatus("timer"));
-				document.getElementById("timer").innerHTML = "Sudoku time: - ";
+				document.getElementById("timer").style.opacity = "0";
 			}
 
 			function pauseTimer() {
@@ -876,6 +875,8 @@
 
 			function startTimer() {
 				setStatus("timer_count",0);
+				localStorage.setItem("saved_timer_count", JSON.stringify(0));
+
 				setStatus("timer", setInterval(timerCallback,1000));
 			}
 
@@ -887,7 +888,9 @@
 				let lbl = "Sudoku time: " + toHHMMSS(current).toString();
 
 				document.getElementById("timer").innerHTML = lbl;
+				document.getElementById("timer").style.opacity = "1";
 			}
+
 
 			// https://stackoverflow.com/questions/6312993/javascript-seconds-to-time-string-with-format-hhmmss
 			function toHHMMSS(sec_num) {
@@ -997,7 +1000,8 @@
 				    margin-bottom: 0.5em;
 					}
 					.inner_table{
-						margin: 0.4em 0em;
+						border: 0.2em solid rgb(64, 64, 64);
+				    margin: -0.2em;
 					}
 					.options_wrapper{
 				    padding: 0.5rem;
@@ -1021,7 +1025,7 @@
 						margin-bottom: 1rem;
 					}
 					.evidence_locked{
-    				background-color: #8896fe !important;
+    				background-color: rgb(136, 150, 254) !important;
 					}
 					.evidence{
 						background-color: rgb(208, 218, 255);
@@ -1047,7 +1051,7 @@
 
 			<div class="sub-sub-title">Note: the current sudoku numbers and time will be saved if the page is reloaded, but the draft mode will be lost.</div>
 
-			<div class="sudoku-time" id="timer">Sudoku time: - </div>
+			<div class="sudoku-time" style="opacity:0;" id="timer">Sudoku time: - </div>
 
 			<div id="main_table_wrap">
       	<table class="main_table" id="main_table"></table>
@@ -1084,6 +1088,6 @@
 				</div>
 			</div>
 
-			<div class="version">Version 1.1.8</div>
+			<div class="version">Version 1.1.9</div>
 	</body>
 </html>
