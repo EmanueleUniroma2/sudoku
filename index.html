@@ -682,7 +682,7 @@
 																 '<input class="sudoku-cell-inner-pencil" maxlength="3" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
-																	'	<table cellspacing="5" class="inner_table">'+
+																	'	<table class="inner_table">'+
 																	'		<tr>';
 
 				let html_for_closed_ineer = '			</tr>'+
@@ -752,41 +752,13 @@
 				}, 1500);
 			}
 
-			function resizePage(){
-
-				document.body.style.fontSize = "1rem";
-
-				if(window.innerWidth < 640){
-					document.body.style.fontSize = "0.85rem";
-				}
-				if(window.innerWidth < 560){
-					document.body.style.fontSize = "0.7rem";
-				}
-				if(window.innerWidth < 490){
-					document.body.style.fontSize = "0.65rem";
-				}
-				if(window.innerWidth < 460){
-					document.body.style.fontSize = "0.55rem";
-				}
-				if(window.innerWidth < 420){
-					document.body.style.fontSize = "0.5rem";
-				}
-			}
-
 			function setup(){
 
 				initTable();
 
 				initSelect();
 
-				resizePage();
-
 				loadStoredSudoku();
-
-				// Listen for resize changes
-				window.addEventListener("resize", function() {
-						resizePage();
-				}, false);
 
 				document.body.style.opacity = "1";
 			}
@@ -928,7 +900,8 @@
 						max-width: 38rem;
           }
           .sudoku-cell{
-            width: 3em;
+            width: 6vw;
+						max-width: 3em;
 						padding: 0 0.1em;
           }
           .sudoku-cell-inner{
@@ -991,14 +964,14 @@
 						font-size: 0.8rem;
 					}
 					.main_table{
-						margin:2em;
+						margin:1em;
 						background-color: rgb(230, 230, 230);
 				    margin-bottom: 0.5em;
 					}
 					.inner_table{
 						border: 0.2em solid rgb(64, 64, 64);
 				    margin: -0.2em;
-						padding-right: 0.6em;
+						padding-right: 0.2em;
 					}
 					.options_wrapper{
 				    padding: 0.5rem;
