@@ -536,6 +536,7 @@
 
 				let free = getStatus("can_solve") != false;
 				if(free){
+					evidenceSameNumbers("");
 					solve();
 					setStatus("can_solve", false);
 				}
