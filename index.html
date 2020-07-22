@@ -32,7 +32,7 @@
 			}
 
       function validateNumber() {
-          var key = window.event ? event.keyCode : event.which;
+					var key = window.event ? event.keyCode : event.which;
           if (event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 32) {
               return true;
           } else if (key < 49 || key > 57) {
@@ -550,13 +550,29 @@
         solve_inner();
       }
 
+			function evidenceSameNumbers(number){
+
+				let v = getSudokuValues();
+				for(let i = 0; i < v.length; i++){
+
+					if(v[i][0] == number && number != ""){
+						if(v[i][1].name == "locked"){
+							v[i][1].className += " evidence_locked";
+						}else{
+							v[i][1].className += " evidence";
+						}
+					}else{
+						v[i][1].className = v[i][1].className.split(" ")[0];
+					}
+				}
+			}
 
 			function initTable(){
 
 				let main_table = document.getElementById("main_table");
 
 				let html_for_inner_row = '<td><div class="sudoku-cell">'+
-																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onkeypress="return validateNumber();" inputmode="numeric">'+
+																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onfocus="evidenceSameNumbers(this.value);" onkeyup="evidenceSameNumbers(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
 																 '<input class="sudoku-cell-inner-pencil" maxlength="3" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
@@ -836,6 +852,12 @@
 						width: 12rem;
 						margin-bottom: 1rem;
 					}
+					.evidence_locked{
+    				background-color: #8896fe !important;
+					}
+					.evidence{
+						background-color: rgb(208, 218, 255);
+					}
 		</style>
 	</head>
 
@@ -879,6 +901,6 @@
 				</div>
 			</div>
 
-			<div class="version">Version 1.1.6</div>
+			<div class="version">Version 1.1.7</div>
 	</body>
 </html>
