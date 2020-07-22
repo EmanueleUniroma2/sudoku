@@ -324,6 +324,9 @@
       function mark_green_cells(){
         let v = getSudokuValues();
         for(let i = 0; i < v.length; i++){
+
+					v[i][1].disabled = true;
+
           v[i][1].style.backgroundColor = "rgba(158, 226, 163,0.1)";
           v[i][1].style.color = "";
 
@@ -447,7 +450,11 @@
 
 				toggleHelpButton(true);
 
-				setStatus("solution", known_solution);
+				startTimer();
+
+				setStatus("solution", solutionToJson(known_solution));
+
+				localStorage.setItem("saved_solution", JSON.stringify(solutionToJson(known_solution)));
 
 				let v = getSudokuValues();
 				let stop = false;
@@ -511,6 +518,10 @@
 
       function clearSudoku(){
 
+				clearAllStoreds();
+
+				closeTimer();
+
 				toggleHelpButton(false);
 
 				evidenceSameNumbers("");
@@ -538,6 +549,7 @@
 
 				let free = getStatus("can_solve") != false;
 				if(free){
+					closeTimer();
 					evidenceSameNumbers("");
 					solve();
 					setStatus("can_solve", false);
@@ -552,6 +564,92 @@
 
         solve_inner();
       }
+
+			function sudokuIsOver(){
+
+				let values = getSudokuValues();
+
+				for(let i = 0; i < values.length-1; i++){
+					if(values[i][0] == 0){
+						return false;
+					}
+				}
+
+				return sudokuIsValid(values);
+			}
+
+			function checkSudokuIsComplete(){
+				if(sudokuIsOver()){
+					pauseTimer();
+					mark_green_cells();
+					return true;
+				}
+
+				return false;
+			}
+
+			function cellEdited(number){
+
+				if(!checkSudokuIsComplete()){
+					evidenceSameNumbers(number);
+				}
+
+				let v = getSudokuValues();
+				let stats = [];
+				for(let i = 0; i < v.length-1; i++){
+					stats.push({ "val": v[i][1].value, "name": v[i][1].name });
+				}
+
+				localStorage.setItem("saved_sudoku", JSON.stringify(stats));
+			}
+
+			function solutionToJson(v){
+				let stats = [];
+				for(let i = 0; i < v.length-1; i++){
+					stats.push(v[i][0]);
+				}
+				return stats;
+			}
+
+			function clearAllStoreds(){
+				localStorage.removeItem("saved_timer_count");
+				localStorage.removeItem("saved_solution");
+				localStorage.removeItem("saved_sudoku");
+			}
+
+			function loadStoredSudoku(){
+
+				let timer = localStorage.getItem("saved_timer_count");
+				if(timer != null){
+					setStatus("timer_count",JSON.parse(timer));
+					setStatus("timer", setInterval(timerCallback,1000));
+				}
+
+				let sol = localStorage.getItem("saved_solution");
+				if(sol != null){
+					setStatus("solution", JSON.parse(sol));
+					toggleHelpButton(true);
+				}
+
+				let values = localStorage.getItem("saved_sudoku");
+
+				if(values != null){
+					let parsed = JSON.parse(values);
+
+					let v = getSudokuValues();
+
+					for(let i = 0; i < parsed.length; i++){
+
+						v[i][1].value = parsed[i]["val"];
+						v[i][1].name = parsed[i]["name"];
+
+						if(parsed[i]["name"] == "locked"){
+							v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+							v[i][1].disabled = true;
+						}
+					}
+				}
+			}
 
 			function evidenceSameNumbers(number){
 
@@ -575,7 +673,7 @@
 				let main_table = document.getElementById("main_table");
 
 				let html_for_inner_row = '<td><div class="sudoku-cell">'+
-																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onfocus="evidenceSameNumbers(this.value);" onkeyup="evidenceSameNumbers(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
+																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onfocus="cellEdited(this.value);" onkeyup="cellEdited(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
 																 '<input class="sudoku-cell-inner-pencil" maxlength="3" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
@@ -682,6 +780,8 @@
 
 				resizePage();
 
+				loadStoredSudoku();
+
 				// Listen for resize changes
 				window.addEventListener("resize", function() {
 						resizePage();
@@ -719,25 +819,80 @@
 			}
 
 			function addOneNumber() {
+
 				let solution = getStatus("solution");
+
 				let v = getSudokuValues();
-				if(solution != null){
+
+				if(solution != undefined){
 
 					let prob = 90;
 
 					while(prob > 10){
 						for(let i = 0; i < v.length; i++){
 							if(getRandomInteger(0,100) > prob && v[i][1].name != "locked" ){
-								v[i][1].value = solution[i][0];
+								v[i][1].value = solution[i];
 								v[i][1].name = "locked";
 								v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
 								v[i][1].disabled = true;
+
+								checkSudokuIsComplete();
+
 								return;
 							}
 						}
 						prob = prob - 10;
 					}
 				}
+			}
+
+			function closeTimer() {
+				if(getStatus("timer") == undefined){
+					return;
+				}
+				clearInterval(getStatus("timer"));
+				document.getElementById("timer").innerHTML = "Sudoku time: - ";
+			}
+
+			function pauseTimer() {
+				if(getStatus("timer") == undefined){
+					return;
+				}
+				clearInterval(getStatus("timer"));
+
+				let t = document.getElementById("timer").innerHTML;
+				t = t.split("Sudoku time:")[1];
+
+				document.getElementById("timer").innerHTML = "Sudoku completed in " + t;
+			}
+
+			function startTimer() {
+				setStatus("timer_count",0);
+				setStatus("timer", setInterval(timerCallback,1000));
+			}
+
+			function timerCallback(){
+				let current = getStatus("timer_count") + 1;
+				setStatus("timer_count",current);
+				localStorage.setItem("saved_timer_count", JSON.stringify(current));
+
+				let lbl = "Sudoku time: " + toHHMMSS(current).toString();
+
+				document.getElementById("timer").innerHTML = lbl;
+			}
+
+			// https://stackoverflow.com/questions/6312993/javascript-seconds-to-time-string-with-format-hhmmss
+			function toHHMMSS(sec_num) {
+
+			    var hours   = Math.floor(sec_num / 3600);
+			    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+			    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+			    if (hours   < 10) {hours   = "0"+hours;}
+			    if (minutes < 10) {minutes = "0"+minutes;}
+			    if (seconds < 10) {seconds = "0"+seconds;}
+
+			    return hours+':'+minutes+':'+seconds;
 			}
 
     </script>
@@ -792,19 +947,19 @@
             height: 1.4em;
           }
           .button{
-            border: 0.1rem solid rgba(0,0,0,0.3);
-            color: rgba(0,0,0,0.7);
-            border-radius: 0.5rem;
+						border: 0.1rem solid rgba(0,0,0,0.3);
+				    color: rgba(0,0,0,0.7);
+				    border-radius: 0.5rem;
 				    font-size: 0.7rem;
-            margin: 0 3rem;
-            width: 15rem;
-            text-align: center;
-            padding: 0.2rem;
-            cursor: pointer;
-            user-select: none;
-            line-height: 1rem;
-						display: inline-block;
-						margin-top: 1rem;
+				    margin: 0 1rem;
+				    width: 15rem;
+				    text-align: center;
+				    padding: 0.2rem;
+				    cursor: pointer;
+				    user-select: none;
+				    line-height: 1rem;
+				    display: inline-block;
+				    margin-top: 0.9rem;
           }
           .button:hover{
             background-color: rgba(0,0,0,0.1);
@@ -842,7 +997,7 @@
 				    border-radius: 0.5rem;
 				    width: 15rem;
 						display: inline-block;
-						margin: 1rem 3rem;
+						margin: 1rem 2rem;
 					}
 					.options_title{
 						opacity: 0.8;
@@ -850,6 +1005,7 @@
 					}
 					.buttons_wrapper{
 						display: inline-block;
+						margin-left: 1rem;
 					}
 					.new_sudoku_button{
 						margin: 0.2rem;
@@ -862,6 +1018,11 @@
 					.evidence{
 						background-color: rgb(208, 218, 255);
 					}
+					.sudoku-time{
+						font-size: 0.8rem;
+						margin-left: 4rem;
+				    margin-bottom: -1rem;
+					}
 		</style>
 	</head>
 
@@ -869,6 +1030,8 @@
 
       <div class="title">Sudoku Solver.</div>
       <div class="sub-title">Insert a sudoku scheme to solve, or generate a new one to play with.</div>
+
+			<div class="sudoku-time" id="timer">Sudoku time: - </div>
 
 			<div id="main_table_wrap">
       	<table class="main_table" id="main_table"></table>
