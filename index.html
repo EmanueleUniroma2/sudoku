@@ -841,6 +841,8 @@
 								v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
 								v[i][1].disabled = true;
 
+								saveCurrentSudoku();
+
 								checkSudokuIsComplete();
 
 								return;
@@ -1030,6 +1032,11 @@
 				    margin-bottom: -1rem;
 						opacity: 0.8;
 					}
+					.sub-sub-title{
+						font-size: 0.8rem;
+				    margin: 1rem;
+				    opacity: 0.8;
+					}
 		</style>
 	</head>
 
@@ -1037,6 +1044,8 @@
 
       <div class="title">Sudoku Solver.</div>
       <div class="sub-title">Insert a sudoku scheme to solve, or generate a new one to play with.</div>
+
+			<div class="sub-sub-title">Note: the current sudoku numbers and time will be saved if the page is reloaded, but the draft mode will be lost.</div>
 
 			<div class="sudoku-time" id="timer">Sudoku time: - </div>
 
