@@ -501,6 +501,7 @@
 
 				saveCurrentSudoku();
 
+				setStatus("help_requested",0);
 			}
 
 			function markCellsAsNonStartes() {
@@ -610,10 +611,46 @@
 				return sudokuIsValid(values);
 			}
 
+			function save_current_win(){
+
+				let name = prompt("You won! Insert a nick name to save this win.");
+
+				let name_ = "-";
+
+				if(name != undefined){
+					if(name.length > 0){
+						name_ = name;
+					}
+				}
+
+				let date = new Date();
+
+				let date_formatted = date.toDateString() + " " + date.toLocaleTimeString();
+
+				let win = {
+					date : date_formatted,
+					helps : getStatus("help_requested"),
+					difficulty: +document.getElementById("select_for_cells").value,
+					diversity: document.getElementById("select_for_spread").value,
+					name: name_
+				};
+
+				let wins = localStorage.getItem("sudoku_wins");
+				if(wins != null){
+					let vect = JSON.parse(wins);
+					vect.push(win);
+					localStorage.setItem("sudoku_wins", JSON.stringify(vect));
+
+				}else{
+					localStorage.setItem("sudoku_wins", JSON.stringify([win]));
+				}
+			}
+
 			function checkSudokuIsComplete(){
 				if(sudokuIsOver()){
 					pauseTimer();
 					mark_green_cells();
+					save_current_win();
 					return true;
 				}
 
@@ -652,9 +689,15 @@
 				localStorage.removeItem("saved_solution");
 				localStorage.removeItem("saved_sudoku");
 				localStorage.removeItem("saved_compl_numbers");
+				localStorage.removeItem("saved_help_requested");
 			}
 
 			function loadStoredSudoku(){
+
+				let helps = localStorage.getItem("saved_help_requested");
+				if(helps != null){
+					setStatus("help_requested",JSON.parse(helps));
+				}
 
 				let counters = localStorage.getItem("saved_compl_numbers");
 				if(counters != null){
@@ -796,6 +839,8 @@
 
 				loadStoredSudoku();
 
+				gotoPage(1);
+
 				document.body.style.opacity = "1";
 			}
 
@@ -828,6 +873,9 @@
 			}
 
 			function addOneNumber() {
+
+				setStatus("help_requested",getStatus("help_requested")+1);
+				localStorage.setItem("saved_help_requested", getStatus("help_requested"));
 
 				let solution = getStatus("solution");
 
@@ -911,6 +959,76 @@
 			    return hours+':'+minutes+':'+seconds;
 			}
 
+			function gotoPage(n){
+				for(let i = 0; i < 10; i++){
+					let p = document.getElementById("page_" + i.toString());
+					if(p != null){
+						p.style.display = "none";
+					}else{
+					}
+				}
+				let curr = document.getElementById("page_" + n.toString());
+				if(curr != null){
+					curr.style.display = "block";
+				}
+			}
+
+			function getHistoryVoice(label) {
+
+				let l = document.createElement("div");
+				l.className = "record_item";
+				l.innerHTML = label;
+
+				return l;
+			}
+
+			function init_win_history(){
+
+				let wins = localStorage.getItem("sudoku_wins");
+
+				let wrap = document.getElementById("wins_list");
+				while(wrap.firstChild){
+					wrap.removeChild(wrap.firstChild);
+				}
+
+				let inner_wrap = document.createElement("div");
+				inner_wrap.className = "record_row_wrapper";
+				wrap.appendChild(inner_wrap);
+
+				let headers = ["Name", "Difficulty", "Diversity", "Used Helps", "Date"];
+
+				let names = ["name", "difficulty", "diversity", "helps", "date"];
+
+				if(wins != null){
+
+					let row = document.createElement("div");
+					row.className = "record_row";
+					for(let j = 0; j < headers.length; j++){
+						row.appendChild(getHistoryVoice(headers[j]));
+						row.lastChild.style.fontWeight = "bold";
+					}
+					inner_wrap.appendChild(row);
+
+					let vect = JSON.parse(wins);
+					for(let i = 0; i < vect.length; i++){
+
+						let w = vect[i];
+						let row = document.createElement("div");
+						row.className = "record_row";
+						for(let j = 0; j < names.length; j++){
+							row.appendChild(getHistoryVoice(w[names[j]]));
+						}
+
+						inner_wrap.appendChild(row);
+					}
+				}else{
+					let no_items = document.createElement("div");
+					no_items.innerHTML = "You have no win records yet.";
+					no_items.className = "no_records";
+					wrap.appendChild(no_items);
+				}
+			}
+
     </script>
 
 		<style type="text/css">
@@ -925,15 +1043,37 @@
 						-webkit-text-fill-color: black;
 						opacity: 1;
 					}
+					.record_row_wrapper{
+						overflow: auto;
+						margin: 1rem;
+					}
+					.record_row{
+						padding: 0.2rem 1rem;
+    				width: 45rem;
+					}
+					.record_item{
+						display: inline-block;
+				    opacity: 0.8;
+				    margin: 0 2rem;
+				    margin-left: 0;
+				    min-width: 5rem;
+				    font-size: 0.8rem;
+					}
+					.no_records{
+						margin: 3rem;
+    				opacity: 0.8;
+					}
           .title{
             margin: 1rem;
             font-size: 1.4rem;
             font-weight: bold;
+						margin-bottom: 0.4rem;
           }
           .sub-title{
             margin: 1rem;
             font-size: 0.8rem;
 						max-width: 38rem;
+						margin-top: 0;
           }
           .sudoku-cell{
             width: 7vw;
@@ -1013,7 +1153,7 @@
 				    padding: 0.5rem;
 				    border: 0.1rem solid rgba(0,0,0,0.3);
 				    border-radius: 0.5rem;
-				    width: 15rem;
+				    width: 14.3rem;
 						display: inline-block;
 						margin: 1rem 2rem;
 					}
@@ -1024,10 +1164,11 @@
 					.buttons_wrapper{
 						display: inline-block;
 						margin-left: 1rem;
+					  margin-right: -2rem;
 					}
 					.new_sudoku_button{
 						margin: 0.2rem;
-						width: 12rem;
+						width: 13rem;
 						margin-bottom: 1rem;
 					}
 					.evidence_locked{
@@ -1038,12 +1179,13 @@
 					}
 					.sudoku-time{
 						font-size: 0.8rem;
-				    margin-left: 3rem;
-				    margin-bottom: -0.8rem;
+						float: right;
+						width: 4.5rem;
+						margin-top: -0.2rem;
 						opacity: 0.8;
 					}
 					.main_table_wrap{
-
+						margin-bottom: 1rem;
 					}
 					.numbers_list_wrap{
 						border: 0.1rem solid rgba(0,0,0,0.3);
@@ -1064,68 +1206,143 @@
 					.numbers_list_title{
 						font-size: 0.9rem;
 						opacity: 0.8;
-						margin-bottom: 0.2rem;
+						margin-bottom: 0.4rem;
+					}
+					.options_main_wrap{
+
+					}
+					.tool_top_bar{
+						border-bottom: 1px solid black;
+					}
+					.tool_top{
+						display: inline-block;
+				    padding: 0.3rem 1rem;
+				    opacity: 0.8;
+				    border-right: 1px solid black;
+				    font-weight: bold;
+				    font-size: 0.9rem;
+				    cursor: pointer;
+				    margin-left: -0.25rem;
+					}
+					.tool_top:hover{
+						background-color: rgba(0,0,0,0.2);
+					}
+					.tool_top:active{
+						background-color: rgba(0,0,0,0.4);
+					}
+					.page{
+						display: none;
+					}
+					.rules{
+						opacity: 0.8;
+				    margin: 0 1rem;
+				    font-size: 0.8rem;
 					}
 		</style>
 	</head>
 
 	<body onload="setup();">
 
-      <div class="title">Sudoku Solver.</div>
-      <div class="sub-title">
-				<strong>Insert a sudoku scheme to solve, or generate a new one to play with.</strong>
-				The current sudoku numbers and time will be saved automatically if the page is left or reloaded, but the draft mode data will be lost.
+
+			<div class="tool_top_bar" >
+				<div class="tool_top" onclick="gotoPage(1);">Home</div>
+				<div class="tool_top" onclick="gotoPage(2);init_win_history();">Win History</div>
+				<div class="tool_top" onclick="gotoPage(3);">How to play</div>
 			</div>
 
-			<div class="sudoku-time" style="opacity:0;" id="timer">⏲ - </div>
 
-			<div id="main_table_wrap">
-      	<table class="main_table" id="main_table"></table>
-				<div class="numbers_list_wrap">
-					<div class="numbers_list_title">Numbers completed</div>
-					<div class="numeber_list_el">1</div>
-					<div class="numeber_list_el">2</div>
-					<div class="numeber_list_el">3</div>
-					<div class="numeber_list_el">4</div>
-					<div class="numeber_list_el">5</div>
-					<div class="numeber_list_el">6</div>
-					<div class="numeber_list_el">7</div>
-					<div class="numeber_list_el">8</div>
-					<div class="numeber_list_el">9</div>
+			<div id="page_1" class="page">
+				<div class="title">Sudoku Solver</div>
+				<div class="sub-title">
+					<strong>Insert a sudoku scheme to solve, or generate a new one to play with.</strong>
+					In case the page is left or reloaded the site will save automatically the sudoku session, but the draft data will be lost.
+				</div>
+
+				<div id="main_table_wrap" class="main_table_wrap">
+	      	<table class="main_table" id="main_table"></table>
+					<input style="display:none;" type="text" id="last_input">
+				</div>
+
+				<div class="options_main_wrap">
+					<div class="numbers_list_wrap">
+						<div class="numbers_list_title"><span>Numbers completed</span><span class="sudoku-time" style="opacity:0;" id="timer">⏲ - </span></div>
+						<div class="numeber_list_el">1</div>
+						<div class="numeber_list_el">2</div>
+						<div class="numeber_list_el">3</div>
+						<div class="numeber_list_el">4</div>
+						<div class="numeber_list_el">5</div>
+						<div class="numeber_list_el">6</div>
+						<div class="numeber_list_el">7</div>
+						<div class="numeber_list_el">8</div>
+						<div class="numeber_list_el">9</div>
+					</div>
+
+					<div class="buttons_wrapper">
+						<div class="button" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
+						<br>
+						<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">TEST CORRECTNESS</div>
+						<br>
+						<div class="button" id="help_button" onclick="addOneNumber();" style="opacity:0.3; cursor:unset;">ADD ONE NUMBER</div>
+						<br>
+						<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
+						<br>
+						<div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
+					</div>
+
+					<div class="options_wrapper">
+						<div class="button new_sudoku_button" onclick="generate();">NEW SUDOKU</div>
+						<br>
+						<div class="options_title">New sudoku options</div>
+						<div class="input_wrap">
+							<div class="select_hint">Visible numbers:</div>
+							<select id="select_for_cells" style="width:13rem; font-size:1rem; opacity: 0.8;"></select>
+						</div>
+						<div class="input_wrap">
+							<div class="select_hint">Numbers variety:</div>
+							<select id="select_for_spread" style="width:13rem; font-size:1rem; opacity: 0.8;">
+								<option value="same">Similar (easier)</option>
+								<option value="random">Random (harder)</option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<input style="display:none;" type="text" id="last_input">
-
-			<div class="buttons_wrapper">
-				<div class="button" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
-				<br>
-				<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">TEST CORRECTNESS</div>
-				<br>
-				<div class="button" id="help_button" onclick="addOneNumber();" style="opacity:0.3; cursor:unset;">ADD ONE NUMBER</div>
-				<br>
-				<div class="button" id="solve_button" onclick="buttonSolve();">SOLVE SUDOKU</div>
-				<br>
-	      <div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
+			<div id="page_2" class="page">
+				<div class="title">Win History</div>
+				<div class="sub-title">
+					Here are listed your historical wins on the current web browser.
+				</div>
+				<div id="wins_list"></div>
 			</div>
 
-			<div class="options_wrapper">
-				<div class="button new_sudoku_button" onclick="generate();">NEW SUDOKU</div>
-				<br>
-				<div class="options_title">New sudoku options</div>
-				<div class="input_wrap">
-					<div class="select_hint">Visible numbers:</div>
-					<select id="select_for_cells" style="width:13rem; font-size:1rem; opacity: 0.8;"></select>
+			<div id="page_3" class="page">
+				<div class="title">How to play</div>
+				<div class="sub-title">
+					Here are the instructions to play a sudoku puzzle.
 				</div>
-				<div class="input_wrap">
-					<div class="select_hint">Numbers variety:</div>
-					<select id="select_for_spread" style="width:13rem; font-size:1rem; opacity: 0.8;">
-						<option value="same">Similar (this is easier)</option>
-						<option value="random">Spread (this is harder)</option>
-					</select>
+
+				<div class="rules">
+
+					The sudoku puzzle consists of a grid of 3x3 blocks, each block containing a grid of 3x3 cells, for a total of 81 cells.
+
+					To solve the puzzle, one must fill each cell with a number without breaking the following constraints:
+					<ul>
+						<li>Each row cannot contain duplicated numbers</li>
+						<li>Each column cannot contain duplicated numbers</li>
+						<li>Each block cannot contain duplicated numbers</li>
+					</ul>
+
+					Or, in terms of objectives:
+					<ul>
+						<li>Each row must contain all numbers from 1 to 9</li>
+						<li>Each column must contain all numbers from 1 to 9</li>
+						<li>Each block must contain all numbers from 1 to 9</li>
+					</ul>
+
 				</div>
 			</div>
 
-			<div class="version">Version 1.3</div>
+			<div class="version">Version 1.4</div>
 	</body>
 </html>
