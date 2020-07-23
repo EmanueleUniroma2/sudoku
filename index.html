@@ -629,6 +629,7 @@
 
 				let win = {
 					date : date_formatted,
+					time: document.getElementById("timer").innerHTML.split("⏲ ")[1],
 					helps : getStatus("help_requested"),
 					difficulty: +document.getElementById("select_for_cells").value,
 					diversity: document.getElementById("select_for_spread").value,
@@ -919,11 +920,7 @@
 					return;
 				}
 				clearInterval(getStatus("timer"));
-
-				let t = document.getElementById("timer").innerHTML;
-				t = t.split("⏲")[1];
-
-				document.getElementById("timer").innerHTML = "Sudoku completed in " + t;
+				document.getElementById("timer").style.fontWeight = "bold";
 				clearAllStoreds();
 			}
 
@@ -943,6 +940,7 @@
 
 				document.getElementById("timer").innerHTML = lbl;
 				document.getElementById("timer").style.opacity = "1";
+				document.getElementById("timer").style.fontWeight = "";
 			}
 
 
@@ -996,9 +994,9 @@
 				inner_wrap.className = "record_row_wrapper";
 				wrap.appendChild(inner_wrap);
 
-				let headers = ["Name", "Initial cells", "Diversity", "Used Helps", "Date"];
+				let headers = ["Name", "Time", "Initial cells", "Diversity", "Used Helps", "Date"];
 
-				let names = ["name", "difficulty", "diversity", "helps", "date"];
+				let names = ["name", "time", "difficulty", "diversity", "helps", "date"];
 
 				if(wins != null){
 
@@ -1181,7 +1179,7 @@
 					.sudoku-time{
 						font-size: 0.8rem;
 						float: right;
-						width: 4.5rem;
+						width: 5rem;
 						margin-top: -0.2rem;
 						opacity: 0.8;
 					}
