@@ -841,6 +841,13 @@
 
 				gotoPage(1);
 
+				let t = document.getElementById("main_table_wrap");
+				if(window.innerWidth < 600){
+					t.style.fontSize = "0.7rem";
+				}else{
+					t.style.fontSize = "1rem";
+				}
+				
 				document.body.style.opacity = "1";
 			}
 
@@ -1186,7 +1193,6 @@
 					}
 					.main_table_wrap{
 						margin-bottom: 1rem;
-						font-size: 0.7rem;
 					}
 					.numbers_list_wrap{
 						border: 0.1rem solid rgba(0,0,0,0.3);
