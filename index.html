@@ -469,12 +469,12 @@
 
 							let test_passed = false;
 
-							if(similarity=="random"){
+							if(similarity=="Random"){
 								let res = getRandomInteger(0,100);
 								test_passed = res > 90;
 							}
 
-							if(similarity=="same"){
+							if(similarity=="Similar"){
 								if(known_solution[i][0] == similarDistributionVector[0]){
 									similarDistributionVector.shift();
 									test_passed = true;
@@ -996,7 +996,7 @@
 				inner_wrap.className = "record_row_wrapper";
 				wrap.appendChild(inner_wrap);
 
-				let headers = ["Name", "Difficulty", "Diversity", "Used Helps", "Date"];
+				let headers = ["Name", "Initial cells", "Diversity", "Used Helps", "Date"];
 
 				let names = ["name", "difficulty", "diversity", "helps", "date"];
 
@@ -1302,8 +1302,8 @@
 						<div class="input_wrap">
 							<div class="select_hint">Numbers variety:</div>
 							<select id="select_for_spread" style="width:13rem; font-size:1rem; opacity: 0.8;">
-								<option value="same">Similar (easier)</option>
-								<option value="random">Random (harder)</option>
+								<option value="Similar">Similar (easier)</option>
+								<option value="Random">Random (harder)</option>
 							</select>
 						</div>
 					</div>
