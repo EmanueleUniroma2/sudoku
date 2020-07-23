@@ -501,7 +501,6 @@
 
 				saveCurrentSudoku();
 
-				addOneNumber();
 			}
 
 			function markCellsAsNonStartes() {
@@ -521,6 +520,8 @@
 			}
 
       function clearSudoku(){
+
+				colorLimitedNumbers([0,0,0,0,0,0,0,0,0]);
 
 				clearAllStoreds();
 
@@ -740,8 +741,7 @@
 
 				let index_def_choice = 1;
 
-				// we add 1 at end of creation
-				let values = [["Few (20)",19], ["Normal (25)",24], ["Many (30)",29], ["Half full (40)",39]];
+				let values = [["Few (20)",20], ["Normal (25)",25], ["Many (30)",30], ["Half full (40)",40]];
 
 				for(let i = 0; i < values.length; i++){
 
