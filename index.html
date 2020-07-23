@@ -613,13 +613,13 @@
 
 			function save_current_win(){
 
-				let name = prompt("You won! Insert a nick name to save this win.");
+				let name = prompt("You won! Insert a nick name to save this win. (max 15 chars)");
 
 				let name_ = "-";
 
 				if(name != undefined){
 					if(name.length > 0){
-						name_ = name;
+						name_ = name.substring(0,15);
 					}
 				}
 
