@@ -888,7 +888,7 @@
 					let prob = 90;
 
 					while(prob > 10){
-						for(let i = 0; i < v.length; i++){
+						for(let i = 0; i < v.length-1; i++){
 							if(getRandomInteger(0,100) > prob && v[i][1].name != "locked" ){
 								v[i][1].value = solution[i];
 								v[i][1].name = "locked";
@@ -1036,6 +1036,7 @@
 						font-family: Arial;
     				padding-bottom: 1em;
 						opacity: 0;
+						overflow-x: hidden;
           }
 					input:disabled{
 						color: black;
