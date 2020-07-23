@@ -841,14 +841,20 @@
 
 				gotoPage(1);
 
+				resize();
+
+				window.addEventListener("resize", resize, false);
+
+				document.body.style.opacity = "1";
+			}
+
+			function resize(){
 				let t = document.getElementById("main_table_wrap");
 				if(window.innerWidth < 600){
 					t.style.fontSize = "0.8rem";
 				}else{
 					t.style.fontSize = "1rem";
 				}
-
-				document.body.style.opacity = "1";
 			}
 
 			function showPaperMode(){
