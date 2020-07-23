@@ -888,7 +888,7 @@
 					let prob = 90;
 
 					while(prob > 10){
-						for(let i = 0; i < v.length-1help_requested; i++){
+						for(let i = 0; i < v.length-1; i++){
 							if(getRandomInteger(0,100) > prob && v[i][1].name != "locked" ){
 								v[i][1].value = solution[i];
 								v[i][1].name = "locked";
@@ -1262,11 +1262,9 @@
 				<div id="main_table_wrap" class="main_table_wrap">
 	      	<table class="main_table" id="main_table"></table>
 					<input style="display:none;" type="text" id="last_input">
-				</div>
 
-				<div class="options_main_wrap">
 					<div class="numbers_list_wrap">
-						<div class="numbers_list_title"><span>Numbers completed</span><span class="sudoku-time" style="opacity:0;" id="timer">⏲ - </span></div>
+						<div class="numbers_list_title"><span>Numbers completed</span><span class="sudoku-time" style="opacity:0;" id="timer"> - </span></div>
 						<div class="numeber_list_el">1</div>
 						<div class="numeber_list_el">2</div>
 						<div class="numeber_list_el">3</div>
@@ -1277,6 +1275,9 @@
 						<div class="numeber_list_el">8</div>
 						<div class="numeber_list_el">9</div>
 					</div>
+				</div>
+
+				<div class="options_main_wrap">
 
 					<div class="buttons_wrapper">
 						<div class="button" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
