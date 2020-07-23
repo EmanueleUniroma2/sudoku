@@ -574,6 +574,8 @@
 
 				let numbers = document.getElementsByClassName("numeber_list_el");
 
+				localStorage.setItem("saved_compl_numbers", JSON.stringify(counter));
+
 				for(let i = 0; i < numbers.length; i++){
 					if(counter[i] == 9){
 						numbers[i].style.opacity = "1";
@@ -649,9 +651,15 @@
 				localStorage.removeItem("saved_timer_count");
 				localStorage.removeItem("saved_solution");
 				localStorage.removeItem("saved_sudoku");
+				localStorage.removeItem("saved_compl_numbers");
 			}
 
 			function loadStoredSudoku(){
+
+				let counters = localStorage.getItem("saved_compl_numbers");
+				if(counters != null){
+					colorLimitedNumbers(JSON.parse(counters));
+				}
 
 				let timer = localStorage.getItem("saved_timer_count");
 				if(timer != null){
@@ -864,7 +872,7 @@
 				clearInterval(getStatus("timer"));
 
 				let t = document.getElementById("timer").innerHTML;
-				t = t.split("Sudoku time:")[1];
+				t = t.split("⏲")[1];
 
 				document.getElementById("timer").innerHTML = "Sudoku completed in " + t;
 				clearAllStoreds();
@@ -882,7 +890,7 @@
 				setStatus("timer_count",current);
 				localStorage.setItem("saved_timer_count", JSON.stringify(current));
 
-				let lbl = "Sudoku time: " + toHHMMSS(current).toString();
+				let lbl = "⏲ " + toHHMMSS(current).toString();
 
 				document.getElementById("timer").innerHTML = lbl;
 				document.getElementById("timer").style.opacity = "1";
@@ -956,7 +964,7 @@
           }
           .button{
 						border: 0.1rem solid rgba(0,0,0,0.3);
-				    color: rgba(0,0,0,0.7);
+				    color: rgba(0,0,0,0.8);
 				    border-radius: 0.5rem;
 				    font-size: 0.7rem;
 				    margin: 0 1rem;
@@ -1038,14 +1046,25 @@
 
 					}
 					.numbers_list_wrap{
-						margin: 0 2rem;
+						border: 0.1rem solid rgba(0,0,0,0.3);
+				    border-radius: 0.5rem;
+				    margin: 0px 2rem;
+				    padding: 0.5rem;
+				    width: 35vw;
+				    max-width: 25rem;
+				    min-width: 14.4rem;
 					}
 					.numeber_list_el{
 						display: inline-block;
 				    opacity: 0.2;
-				    width: 7vw;
-				    max-width: 2.7rem;
+				    width: 9%;
+				    text-align: center;
 						user-select: none;
+					}
+					.numbers_list_title{
+						font-size: 0.9rem;
+						opacity: 0.8;
+						margin-bottom: 0.2rem;
 					}
 		</style>
 	</head>
@@ -1058,11 +1077,12 @@
 				The current sudoku numbers and time will be saved automatically if the page is left or reloaded, but the draft mode data will be lost.
 			</div>
 
-			<div class="sudoku-time" style="opacity:0;" id="timer">Sudoku time: - </div>
+			<div class="sudoku-time" style="opacity:0;" id="timer">⏲ - </div>
 
 			<div id="main_table_wrap">
       	<table class="main_table" id="main_table"></table>
 				<div class="numbers_list_wrap">
+					<div class="numbers_list_title">Numbers completed</div>
 					<div class="numeber_list_el">1</div>
 					<div class="numeber_list_el">2</div>
 					<div class="numeber_list_el">3</div>
@@ -1106,6 +1126,6 @@
 				</div>
 			</div>
 
-			<div class="version">Version 1.2</div>
+			<div class="version">Version 1.3</div>
 	</body>
 </html>
