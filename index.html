@@ -843,6 +843,19 @@
 				gotoPage(1);
 
 				document.body.style.opacity = "1";
+
+				window.addEventListener("resize",resize,true);
+				resize();
+			}
+
+			function resize(){
+				let w = document.getElementById("options_main_wrap");
+
+				if(w.offsetLeft > 50){
+					w.style.top = "-4rem";
+				}else{
+					w.style.top = "";
+				}
 			}
 
 
@@ -1107,8 +1120,8 @@
 				    color: rgba(0,0,0,0.8);
 				    border-radius: 0.5rem;
 				    font-size: 0.7rem;
-				    margin: 0 1rem;
-				    width: 15rem;
+    				margin: -0.2rem 1rem;
+			    	width: 15rem;
 				    text-align: center;
 				    padding: 0.2rem;
 				    cursor: pointer;
@@ -1186,14 +1199,15 @@
 					}
 					.main_table_wrap{
 						margin-bottom: 1rem;
+						display: inline-block;
 					}
 					.numbers_list_wrap{
 						border: 0.1rem solid rgba(0,0,0,0.3);
 				    border-radius: 0.5rem;
 				    margin: 0px 2rem;
 				    padding: 0.5rem;
-				    width: 35vw;
-				    max-width: 25rem;
+				    width: 55vw;
+				    max-width: 31.2rem;
 				    min-width: 14.4rem;
 					}
 					.numeber_list_el{
@@ -1209,7 +1223,8 @@
 						margin-bottom: 0.4rem;
 					}
 					.options_main_wrap{
-
+						display: inline-block;
+						position: relative;
 					}
 					.tool_top_bar{
 						border-bottom: 1px solid black;
@@ -1262,6 +1277,9 @@
 				<div id="main_table_wrap" class="main_table_wrap">
 	      	<table class="main_table" id="main_table"></table>
 					<input style="display:none;" type="text" id="last_input">
+				</div>
+
+				<div class="options_main_wrap" id="options_main_wrap">
 
 					<div class="numbers_list_wrap">
 						<div class="numbers_list_title"><span>Numbers completed</span><span class="sudoku-time" style="opacity:0;" id="timer"> - </span></div>
@@ -1275,9 +1293,6 @@
 						<div class="numeber_list_el">8</div>
 						<div class="numeber_list_el">9</div>
 					</div>
-				</div>
-
-				<div class="options_main_wrap">
 
 					<div class="buttons_wrapper">
 						<div class="button" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
