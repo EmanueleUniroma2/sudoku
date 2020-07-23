@@ -500,6 +500,8 @@
 				markCellsAsNonStartes();
 
 				saveCurrentSudoku();
+
+				addOneNumber();
 			}
 
 			function markCellsAsNonStartes() {
@@ -567,14 +569,39 @@
         solve_inner();
       }
 
+			function colorLimitedNumbers(counter){
+
+				let numbers = document.getElementsByClassName("numeber_list_el");
+
+				for(let i = 0; i < numbers.length; i++){
+					if(counter[i] == 9){
+						numbers[i].style.opacity = "1";
+					}else{
+						numbers[i].style.opacity = "0.2";
+					}
+				}
+			}
+
 			function sudokuIsOver(){
 
 				let values = getSudokuValues();
 
+				let result = true;
+
+				let counter = [0,0,0,0,0,0,0,0,0];
+
 				for(let i = 0; i < values.length-1; i++){
 					if(values[i][0] == 0){
-						return false;
+						result = false;
+					}else{
+						counter[values[i][0]-1] += 1;
 					}
+				}
+
+				colorLimitedNumbers(counter);
+
+				if(!result){
+					return false;
 				}
 
 				return sudokuIsValid(values);
@@ -713,7 +740,8 @@
 
 				let index_def_choice = 1;
 
-				let values = [["Few (20)",20], ["Normal (25)",25], ["Many (30)",30], ["Half full (40)",40]];
+				// we add 1 at end of creation
+				let values = [["Few (20)",19], ["Normal (25)",24], ["Many (30)",29], ["Half full (40)",39]];
 
 				for(let i = 0; i < values.length; i++){
 
@@ -1006,6 +1034,19 @@
 				    margin-bottom: -0.8rem;
 						opacity: 0.8;
 					}
+					.main_table_wrap{
+
+					}
+					.numbers_list_wrap{
+						margin: 0 2rem;
+					}
+					.numeber_list_el{
+						display: inline-block;
+				    opacity: 0.2;
+				    width: 7vw;
+				    max-width: 2.7rem;
+						user-select: none;
+					}
 		</style>
 	</head>
 
@@ -1021,6 +1062,17 @@
 
 			<div id="main_table_wrap">
       	<table class="main_table" id="main_table"></table>
+				<div class="numbers_list_wrap">
+					<div class="numeber_list_el">1</div>
+					<div class="numeber_list_el">2</div>
+					<div class="numeber_list_el">3</div>
+					<div class="numeber_list_el">4</div>
+					<div class="numeber_list_el">5</div>
+					<div class="numeber_list_el">6</div>
+					<div class="numeber_list_el">7</div>
+					<div class="numeber_list_el">8</div>
+					<div class="numeber_list_el">9</div>
+				</div>
 			</div>
 
 			<input style="display:none;" type="text" id="last_input">
