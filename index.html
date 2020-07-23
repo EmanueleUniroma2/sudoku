@@ -502,6 +502,7 @@
 				saveCurrentSudoku();
 
 				setStatus("help_requested",0);
+				localStorage.setItem("saved_help_requested", JSON.stringify(0));
 			}
 
 			function markCellsAsNonStartes() {
