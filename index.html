@@ -977,7 +977,9 @@
 				if(sudokuIsOver()){
 					pauseTimer();
 					mark_green_cells();
+					clearAllStoreds();
 					save_current_win();
+
 					return true;
 				}
 
