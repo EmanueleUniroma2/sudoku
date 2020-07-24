@@ -1275,6 +1275,8 @@
 								setStatus("help_requested",getStatus("help_requested")+1);
 								localStorage.setItem("saved_help_requested", getStatus("help_requested"));
 
+								evidenceSameNumbers("");
+
 								saveCurrentSudoku();
 
 								checkSudokuIsComplete();
