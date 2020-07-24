@@ -984,6 +984,10 @@
 				return false;
 			}
 
+			function cellEditedGoDown(outer) {
+				cellEdited(outer.firstChild.value);
+			}
+
 			function cellEdited(number){
 
 				if(!checkSudokuIsComplete()){
@@ -1088,8 +1092,8 @@
 
 				let main_table = document.getElementById("main_table");
 
-				let html_for_inner_row = '<td><div class="sudoku-cell">'+
-																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onclick="cellEdited(this.value);" onkeyup="cellEdited(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
+				let html_for_inner_row = '<td><div class="sudoku-cell" onclick="cellEditedGoDown(this);">'+
+																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onfocus="cellEdited(this.value);" onkeyup="cellEdited(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
 																 '<input class="sudoku-cell-inner-pencil" maxlength="3" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
@@ -1818,6 +1822,6 @@
 				</div>
 			</div>
 
-			<div class="version">Version 1.9</div>
+			<div class="version">Version 1.11</div>
 	</body>
 </html>
