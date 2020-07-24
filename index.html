@@ -19,6 +19,110 @@
 
     <script type="text/javascript">
 
+			var STARTER_COLOR = "rgb(45, 45, 45)";
+
+
+			var DEBUG_PATTERN_FORCE_INDEX = -1;
+
+			var PATTERN_ARRAYS = [
+				{
+					name: "Asterisc",
+					pattern: [false, false, false, true, true, false, false, false, true,
+							false, true, false, false, true, false, true, false, true,
+							false, false, false, false, true, true, true, false, false,
+							false, false, true, true, true, false, false, false, true,
+							false, false, false, false, false, false, false, false, false,
+							true, false, false, false, true, true, true, false, false,
+							false, false, true, true, true, false, false, false, false,
+							true, false, true, false, true, false, false, true, false,
+							true, false, false, false, true, true, false, false, false]
+				},
+				{
+					name: "Star",
+					pattern: [true, false, false, false, true, false, false, false, true,
+					false, false, false, false, true, false, false, true, false,
+					false, false, true, false, true, false, true, false, false,
+					false, false, false, false, true, true, false, false, false,
+					false, true, false, true, false, true, false, true, false,
+					false, false, false, true, true, false, false, false, false,
+					false, false, true, false, true, false, true, false, false,
+					false, true, false, false, true, false, false, false, false,
+					true, false, false, false, true, false, false, false, true]
+				},
+				{
+					name: "Snakes",
+					pattern: [false, false, false, false, true, true, false, true, false,
+						false, false, false, true, true, false, false, true, false,
+						false, true, true, true, false, false, true, false, false,
+						false, false, false, false, false, false, false, false, true,
+						false, false, false, true, true, true, false, false, false,
+						true, false, false, false, false, false, false, false, false,
+						 false, false, true, false, false, true, true, true, false,
+						 false, true, false, false, true, true, false, false, false,
+						 false, true, false, true, true, false, false, false, false]
+				},
+				{
+					name: "River",
+					pattern: [true, false, false, false, true, false, false, false, true,
+								false, true, false, false, true, true, false, false, true,
+								false, false, true, false, true, false, false, false, false,
+								true, false, true, false, false, false, true, false, false,
+								false, false, true, false, true, false, true, false, false,
+								false, false, true, false, false, false, true, false, true,
+								false, false, false, false, true, false, true, false, false,
+								true, false, false, true, true, false, false, true, false,
+								true, false, false, false, true, false, false, false, true]
+				},
+				{
+					name: "Cliffs",
+					pattern: [true, false, false, true, false, false, false, false, true,
+						 false, false, true, false, false, true, true, false, false,
+						 false, false, true, false, false, true, false, true, false,
+							false, true, false, true, false, false, false, false, true,
+							false, false, true, false, true, false, true, false, false,
+							true, false, false, false, false, true, false, true, false,
+							false, true, false, true, false, false, true, false, false,
+							true, false, false, true, false, false, false, false, true,
+							true, false, false, false, false, true, false, false, true]
+				},
+				{
+					name: "Alienship",
+					pattern:	[true, false, false, true, false, true, false, false, true,
+										false, true, false, false, true, false, true, false, true,
+										false, false, true, true, false, true, true, false, false,
+										false, true, false, true, false, false, false, true, false,
+										false, false, false, true, true, true, false, false, false,
+										false, true, false, false, false, true, false, true, false,
+										 false, true, true, false, false, false, true, true, false,
+										 false, true, false, false, true, false, true, false, true,
+										 true, true, false, false, false, false, false, true, true]
+				},
+				{
+					name: "Ribbon",
+					pattern: [false, true, false, true, true, false, false, false, false,
+ 					 true, false, false, false, true, false, false, true, false,
+ 					 false, true, true, false, false, false, true, false, false,
+ 					 true, false, false, true, true, false, false, false, false,
+ 						false, false, true, true, false, true, true, false, false,
+ 						false, false, false, false, true, true, false, false, true,
+ 						false, false, true, false, false, false, true, true, false,
+ 						false, true, false, false, true, false, false, false, true,
+ 						 false, false, false, false, true, true, false, true, false]
+				},
+				{
+					name: "Road",
+					pattern: [true, false, false, true, false, true, false, true, false,
+									 false, true, false, false, false, true, true, false, false,
+									 false, false, true, true, false, true, false, true, false,
+									 false, false, false, true, true, false, false, true, true,
+									 true, false, false, false, true, false, false, false, true,
+										true, true, false, false, true, true, false, false, false,
+										false, false, false, true, true, false, true, false, false,
+										false, false, true, true, false, false, false, true, false,
+										false, false, false, false, true, true, false, false, true]
+				},
+			];
+
 			var STATUS = {};
 
 			function setStatus(name, value){
@@ -312,7 +416,7 @@
 
           if(v[i][0] != 0){
             v[i][1].name = "locked";
-            v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+            v[i][1].style.backgroundColor = STARTER_COLOR;
           }else{
             v[i][1].name = "";
             v[i][1].style.backgroundColor = "";
@@ -401,11 +505,24 @@
 				}
 			}
 
+			function regularDistribution(){
+				return ["1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+								"1","2","3","4","5","6","7","8","9",
+							];
+			}
+
 			function similarDistribution(amount){
 
 				let domain = ["1","2","3","4","5","6","7","8","9"];
 
-				let distribution = ["1","2","3","4","5","6","7","8","9","1","2","3","4","5","6","7","8","9"];
+				let distribution = [];
 
 				let max_same = 5;
 
@@ -434,6 +551,35 @@
 				return distribution;
 			}
 
+			function printPattern(){
+				let v = getSudokuValues();
+				let pat = [];
+				let c = 0;
+				for(let i = 0; i < v.length-1;i++){
+					if(v[i][0] != 0){
+						pat.push(true);
+						c++;
+					}else{
+						pat.push(false);
+					}
+				}
+				return [c,pat];
+			}
+
+			// only 25 numbers allowed
+			function getImagePattern(index){
+
+				if(DEBUG_PATTERN_FORCE_INDEX >= 0){
+					return PATTERN_ARRAYS[DEBUG_PATTERN_FORCE_INDEX]["pattern"];
+				}
+
+				if(index >= 0){
+					return PATTERN_ARRAYS[index]["pattern"];
+				}
+
+				return PATTERN_ARRAYS[getRandomInteger(0,PATTERN_ARRAYS.length)]["pattern"];
+			}
+
 			function generate(){
 
 				let visibles = +document.getElementById("select_for_cells").value;
@@ -459,42 +605,72 @@
 				let v = getSudokuValues();
 				let stop = false;
 
+				let regularDistributionVector = regularDistribution();
+
 				let similarDistributionVector = similarDistribution(visibles);
 
-				while(!stop){
+				let distribution_noise_limit = 80;
+
+				let is_pattern = document.getElementById("input_for_position").checked;
+
+				let pattern_index = document.getElementById("select_for_pattern").value;
+
+				let image_pattern = getImagePattern(pattern_index);
+
+				if(is_pattern){
 
 					for(let i = 0; i < v.length - 1; i++){
+							if(image_pattern[i]){
+								v[i][1].disabled = true;
+								v[i][1].name = "locked";
+								v[i][1].style.backgroundColor = STARTER_COLOR;
+								v[i][1].value = known_solution[i][0];
+							}
+					}
 
-						if(v[i][1].name != "locked"){
+				}else{
+
+					while(!stop){
+
+						for(let i = 0; i < v.length - 1; i++){
 
 							let test_passed = false;
 
-							if(similarity=="Random"){
-								let res = getRandomInteger(0,100);
-								test_passed = res > 90;
-							}
+							if(v[i][1].name != "locked"){
 
-							if(similarity=="Similar"){
-								if(known_solution[i][0] == similarDistributionVector[0]){
-									similarDistributionVector.shift();
-									test_passed = true;
+								if(similarity=="Random"){
+									let res = getRandomInteger(0,100);
+									test_passed = res > 90;
+								}
+								if(similarity=="Similar" && getRandomInteger(0,100) > distribution_noise_limit){
+									if(known_solution[i][0] == similarDistributionVector[0]){
+										similarDistributionVector.shift();
+										test_passed = true;
+									}
+								}
+								if(similarity=="Regular" && getRandomInteger(0,100) > distribution_noise_limit){
+									if(known_solution[i][0] == regularDistributionVector[0]){
+										regularDistributionVector.shift();
+										test_passed = true;
+									}
 								}
 							}
 
 							if(test_passed){
 								v[i][1].disabled = true;
 								v[i][1].name = "locked";
-								v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+								v[i][1].style.backgroundColor = STARTER_COLOR;
 								v[i][1].value = known_solution[i][0];
 								visibles = visibles - 1;
-							}
 
-							if(visibles <= 0){
-								stop = true;
-								break;
+								if(visibles <= 0){
+									stop = true;
+									break;
+								}
 							}
 						}
 					}
+
 				}
 
 				markCellsAsNonStartes();
@@ -503,6 +679,8 @@
 
 				setStatus("help_requested",0);
 				localStorage.setItem("saved_help_requested", JSON.stringify(0));
+
+				storeGenOptions();
 			}
 
 			function markCellsAsNonStartes() {
@@ -612,6 +790,37 @@
 				return sudokuIsValid(values);
 			}
 
+			function getVariety(){
+				let distr = document.getElementById("select_for_spread").value;
+				let patt = document.getElementById("input_for_position").checked;
+
+				if(patt){
+					return "Image pattern";
+				}else{
+					return distr;
+				}
+			}
+
+			function getDifficulty(){
+				let distr = document.getElementById("select_for_cells").value;
+				let patt = document.getElementById("input_for_position").checked;
+
+				if(patt){
+					return "Image pattern";
+				}else{
+					return distr;
+				}
+			}
+
+			function storeGenOptions(){
+				let genOptions = {
+					difficulty: getDifficulty(),
+					diversity: getVariety()
+				};
+				setStatus("gen_options", genOptions);
+				localStorage.setItem("saved_gen_options",JSON.stringify(genOptions));
+			}
+
 			function save_current_win(){
 
 				let name = prompt("You won! Insert a nick name to save this win. (max 15 chars)");
@@ -628,12 +837,14 @@
 
 				let date_formatted = date.toDateString() + " " + date.toLocaleTimeString();
 
+				let opt = getStatus("gen_options");
+
 				let win = {
 					date : date_formatted,
 					time: document.getElementById("timer").innerHTML.split("⏲ ")[1],
 					helps : getStatus("help_requested"),
-					difficulty: +document.getElementById("select_for_cells").value,
-					diversity: document.getElementById("select_for_spread").value,
+					difficulty: opt["difficulty"],
+					diversity: opt["diversity"],
 					name: name_
 				};
 
@@ -696,6 +907,11 @@
 
 			function loadStoredSudoku(){
 
+				let opt = localStorage.getItem("saved_gen_options");
+				if(opt != null){
+					setStatus("gen_options",JSON.parse(opt));
+				}
+
 				let helps = localStorage.getItem("saved_help_requested");
 				if(helps != null){
 					setStatus("help_requested",JSON.parse(helps));
@@ -730,7 +946,7 @@
 						v[i][1].name = parsed[i]["name"];
 
 						if(parsed[i]["name"] == "locked"){
-							v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+							v[i][1].style.backgroundColor = STARTER_COLOR;
 							v[i][1].disabled = true;
 						}
 					}
@@ -790,11 +1006,15 @@
 
 			function initSelect(){
 
-				let select = document.getElementById("select_for_cells");
+				let select = document.getElementById("select_for_pattern");
 
-				let index_def_choice = 1;
+				let index_def_choice = 0;
 
-				let values = [["Few (20)",20], ["Normal (25)",25], ["Many (30)",30], ["Half full (40)",40]];
+				let values = [["Random", -1]];
+
+				for(let j = 0; j < PATTERN_ARRAYS.length;j++){
+					values.push([PATTERN_ARRAYS[j]["name"] ,j]);
+				}
 
 				for(let i = 0; i < values.length; i++){
 
@@ -851,6 +1071,15 @@
 
 			function resize(){
 				let w = document.getElementById("options_main_wrap");
+
+				let b = document.getElementById("buttons_wrapper");
+				let n = document.getElementById("options_wrapper");
+
+				if(n.offsetLeft > 50){
+					b.style.top = "-5rem";
+				}else{
+					b.style.top = "";
+				}
 
 				if(w.offsetLeft > 50){
 					w.style.top = "-5rem";
@@ -915,7 +1144,7 @@
 							if(getRandomInteger(0,100) > prob && v[i][1].name != "locked" ){
 								v[i][1].value = solution[i];
 								v[i][1].name = "locked";
-								v[i][1].style.backgroundColor = "rgb(222, 222, 222)";
+								v[i][1].style.backgroundColor = STARTER_COLOR;
 								v[i][1].disabled = true;
 
 								saveCurrentSudoku();
@@ -1051,6 +1280,25 @@
 				}
 			}
 
+			function unlock_option_spread(){
+				let s = document.getElementById("select_for_spread");
+				let r = document.getElementById("select_for_cells");
+
+
+				let cur = document.getElementById("input_for_position");
+				let a = document.getElementById("select_for_pattern");
+
+				if(!cur.checked){
+					s.disabled = false;
+					r.disabled = false;
+					a.disabled = true;
+				}else{
+					s.disabled = true;
+					r.disabled = true;
+					a.disabled = false;
+				}
+			}
+
     </script>
 
 		<style type="text/css">
@@ -1063,7 +1311,7 @@
           }
 					input:disabled{
 						color: black;
-						-webkit-text-fill-color: black;
+						-webkit-text-fill-color: rgb(240,240,240);
 						opacity: 1;
 					}
 					.record_row_wrapper{
@@ -1138,7 +1386,7 @@
 				    user-select: none;
 				    line-height: 1rem;
 				    display: inline-block;
-				    margin-top: 0.9rem;
+				    margin-top: 1.2rem;
           }
           .button:hover{
             background-color: rgba(0,0,0,0.1);
@@ -1188,6 +1436,7 @@
 						display: inline-block;
 						margin-left: 1rem;
 					  margin-right: -2rem;
+						position: relative;
 					}
 					.new_sudoku_button{
 						margin: 0.2rem;
@@ -1304,7 +1553,7 @@
 						<div class="numeber_list_el">9</div>
 					</div>
 
-					<div class="buttons_wrapper">
+					<div class="buttons_wrapper" id="buttons_wrapper">
 						<div class="button" onclick="showPaperMode();">&#9998; DRAFT MODE</div>
 						<br>
 						<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">TEST CORRECTNESS</div>
@@ -1316,19 +1565,36 @@
 						<div class="button" id="clear_button" onclick="clearSudoku();">CLEAR</div>
 					</div>
 
-					<div class="options_wrapper">
+					<div class="options_wrapper" id="options_wrapper">
 						<div class="button new_sudoku_button" onclick="generate();">NEW SUDOKU</div>
 						<br>
-						<div class="options_title">New sudoku options</div>
+						<div class="options_title">Pattern options:</div>
 						<div class="input_wrap">
-							<div class="select_hint">Visible numbers:</div>
-							<select id="select_for_cells" style="width:13rem; font-size:1rem; opacity: 0.8;"></select>
+							<label>
+								<input id="input_for_position" style="opacity: 0.8;" type="checkbox" onchange="unlock_option_spread();" checked>
+								<span style="opacity: 0.8; font-size:0.8rem;">Use image pattern</span>
+							</label>
 						</div>
 						<div class="input_wrap">
-							<div class="select_hint">Numbers variety:</div>
-							<select id="select_for_spread" style="width:13rem; font-size:1rem; opacity: 0.8;">
-								<option value="Similar">Similar (easier)</option>
-								<option value="Random">Random (harder)</option>
+							<div class="select_hint">Choose a pattern:</div>
+							<select id="select_for_pattern" style="width:13rem; font-size:1rem; opacity: 0.8;">
+							</select>
+						</div>
+						<div class="options_title">Pattern free options:</div>
+						<div class="input_wrap">
+							<div class="select_hint">Random Visible numbers:</div>
+							<select id="select_for_cells" style="width:13rem; font-size:1rem; opacity: 0.8;" disabled>
+								<option value="25">Few (25)</option>
+								<option value="33" selected>Normal (33)</option>
+								<option value="41">Many (41)</option>
+							</select>
+						</div>
+						<div class="input_wrap">
+							<div class="select_hint">Random numbers variety:</div>
+							<select id="select_for_spread" style="width:13rem; font-size:1rem; opacity: 0.8;" disabled>
+								<option value="Regular">Easy (Regular)</option>
+								<option value="Similar">Medium (Similar)</option>
+								<option value="Random">Hard (Random)</option>
 							</select>
 						</div>
 					</div>
