@@ -27,15 +27,15 @@
 			var PATTERN_ARRAYS = [
 				{
 					name: "Asterisc",
-					pattern: [false, false, false, true, true, false, false, false, true,
-							false, true, false, false, true, false, true, false, true,
-							false, false, false, false, true, true, true, false, false,
-							false, false, true, true, true, false, false, false, true,
-							false, false, false, false, false, false, false, false, false,
-							true, false, false, false, true, true, true, false, false,
-							false, false, true, true, true, false, false, false, false,
-							true, false, true, false, true, false, false, true, false,
-							true, false, false, false, true, true, false, false, false]
+					pattern: [false, false, false, true, true, false, false, false,
+						true, false, true, false, false, true, false, true, false, true,
+						 false, false, false, false, true, true, true, false, false, false,
+						 false, true, true, true, false, false, false, true, false, false,
+						 false, false, true, false, false, false, false, true, false, false,
+						 false, true, true, true, false, false, false, false, true, true,
+						 true, false, false, false, false, true, false, true, false, true,
+						 false, false, true, false, true, false, false, false, true, true,
+						 false, false, false]
 				},
 				{
 					name: "Star",
@@ -110,6 +110,18 @@
  						 false, false, false, false, true, true, false, true, false]
 				},
 				{
+					name: "Happy",
+					pattern:[false, true, true, false, true, true, false, false,
+						false, false, false, false, false, true, false, false, true,
+						 false, true, true, false, true, true, false, false, false,
+						  false, false, false, false, true, true, false, false, true,
+							 false, false, true, false, false, true, false, true, true,
+							 true, false, false, false, false, true, true, false, true,
+							 false, false, true, false, false, false, true, false, false,
+							 false, false, false, false, true, true, true, true, true,
+							 true, false, true, false, true, false, false, false, false, false]
+				},
+				{
 					name: "Road",
 					pattern: [true, false, false, true, false, true, false, true, false,
 									 false, true, false, false, false, true, true, false, false,
@@ -121,6 +133,31 @@
 										false, false, true, true, false, false, false, true, false,
 										false, false, false, false, true, true, false, false, true]
 				},
+				{
+					name: "Diagonals",
+					pattern:[true, false, false, false, true, false, false, false, true,
+						 			true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true,
+									true, false, false, false, true, false, false, false, true]
+				},
+				{
+					name: "Jet",
+					pattern: [false, false, false, false, true, false, true, false,
+										false, false, true, false, false, true, false, true,
+										 false, true, false, false, false, false, true, false,
+										 false, false, true, false, false, true, false, true,
+										 false, false, true, false, true, false, true, true,
+										 false, true, true, false, true, true, false, false,
+										 false, true, false, false, true, false, true, false,
+										 true, true, true, false, false, false, false, true,
+										 false, true, true, false, true, false, true, false,
+										 true, false, true, false, true, true, false, false, false]
+				}
 			];
 
 			var STATUS = {};
@@ -577,9 +614,9 @@
 
 				if(index >= 0){
 					pattern = PATTERN_ARRAYS[index];
+				}else{
+					pattern = PATTERN_ARRAYS[getRandomInteger(0,PATTERN_ARRAYS.length)];					
 				}
-
-				pattern = PATTERN_ARRAYS[getRandomInteger(0,PATTERN_ARRAYS.length)];
 
 				setStatus("picked_pattern", pattern["name"]);
 
