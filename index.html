@@ -1089,7 +1089,7 @@
 				let main_table = document.getElementById("main_table");
 
 				let html_for_inner_row = '<td><div class="sudoku-cell">'+
-																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onfocus="cellEdited(this.value);" onkeyup="cellEdited(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
+																 '<input class="sudoku-cell-inner" type="text" maxlength="1" onclick="cellEdited(this.value);" onkeyup="cellEdited(this.value);" onkeypress="return validateNumber();" inputmode="numeric">'+
 																 '<input class="sudoku-cell-inner-pencil" maxlength="3" type="text"></div></td>';
 
 				let html_for_open_inner = '<td>'+
