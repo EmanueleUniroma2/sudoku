@@ -569,15 +569,21 @@
 			// only 25 numbers allowed
 			function getImagePattern(index){
 
+				let pattern = null;
+
 				if(DEBUG_PATTERN_FORCE_INDEX >= 0){
-					return PATTERN_ARRAYS[DEBUG_PATTERN_FORCE_INDEX]["pattern"];
+					pattern = PATTERN_ARRAYS[DEBUG_PATTERN_FORCE_INDEX];
 				}
 
 				if(index >= 0){
-					return PATTERN_ARRAYS[index]["pattern"];
+					pattern = PATTERN_ARRAYS[index];
 				}
 
-				return PATTERN_ARRAYS[getRandomInteger(0,PATTERN_ARRAYS.length)]["pattern"];
+				pattern = PATTERN_ARRAYS[getRandomInteger(0,PATTERN_ARRAYS.length)];
+
+				setStatus("picked_pattern", pattern["name"]);
+
+				return pattern["pattern"];
 			}
 
 			function generate(){
@@ -795,7 +801,7 @@
 				let patt = document.getElementById("input_for_position").checked;
 
 				if(patt){
-					return "Image pattern";
+					return getStatus("picked_pattern");
 				}else{
 					return distr;
 				}
@@ -806,7 +812,7 @@
 				let patt = document.getElementById("input_for_position").checked;
 
 				if(patt){
-					return "Image pattern";
+					return getStatus("picked_pattern");
 				}else{
 					return distr;
 				}
