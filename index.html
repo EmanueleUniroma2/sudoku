@@ -1195,8 +1195,6 @@
 
 				window.addEventListener("resize",resize,true);
 				resize();
-
-				setTimeout(gotoPage(1), 500);
 			}
 
 			function resize(){
@@ -1352,6 +1350,7 @@
 			}
 
 			function gotoPage(n){
+
 				for(let i = 0; i < 10; i++){
 					let p = document.getElementById("page_" + i.toString());
 					if(p != null){
@@ -1706,7 +1705,7 @@
 			</div>
 
 
-			<div id="page_1" class="page">
+			<div id="page_1" class="page" style="display:block;">
 				<div class="title">Sudoku Solver</div>
 				<div class="sub-title">
 					<strong>Insert a sudoku scheme to solve, or generate a new one to play with.</strong>
