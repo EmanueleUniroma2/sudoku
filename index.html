@@ -1193,10 +1193,10 @@
 
 				setupInfos();
 
-				gotoPage(1);
-
 				window.addEventListener("resize",resize,true);
 				resize();
+
+				setTimeout(gotoPage(1), 500);
 			}
 
 			function resize(){
