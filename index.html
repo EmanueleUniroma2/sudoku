@@ -1185,8 +1185,6 @@
 
 			function setup(){
 
-				localStorage.clear();
-
 				initTable();
 
 				initSelect();
@@ -1196,8 +1194,6 @@
 				setupInfos();
 
 				gotoPage(1);
-
-				document.body.style.opacity = "1";
 
 				window.addEventListener("resize",resize,true);
 				resize();
@@ -1473,7 +1469,6 @@
 						margin: 0;
 						font-family: Arial;
     				padding-bottom: 1em;
-						opacity: 0;
 						overflow-x: hidden;
           }
 					input:disabled{
