@@ -819,6 +819,8 @@
 
 				clearAllStoreds();
 
+				setStatus("already_saved", false);		
+
 				closeTimer();
 
 				toggleHelpButton(false);
@@ -978,7 +980,10 @@
 					pauseTimer();
 					mark_green_cells();
 					clearAllStoreds();
-					save_current_win();
+					if(getStatus("already_saved") != true){
+						save_current_win();
+						setStatus("already_saved", true);
+					}
 
 					return true;
 				}
