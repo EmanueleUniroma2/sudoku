@@ -715,7 +715,7 @@
 				setStatus("solution", solutionToJson(known_solution));
 
 				setStatus("moves", []);
-				localStorage.setItem("saved_moves", []);
+				localStorage.setItem("saved_moves", JSON.stringify([]));
 
 				localStorage.setItem("saved_solution", JSON.stringify(solutionToJson(known_solution)));
 
@@ -1019,11 +1019,11 @@
 				cellEdited(outer.firstChild.value);
 			}
 
+			function numberDivClicked(el){
+				cellEdited(el.innerHTML);
+			}
+
 			function cellEdited(number){
-
-				let moves = getStatus("moves");
-
-				moves.push()
 
 				if(!checkSudokuIsComplete()){
 					evidenceSameNumbers(number);
@@ -1059,57 +1059,76 @@
 				localStorage.removeItem("saved_moves");
 			}
 
+			function isNullOrUndefined(v){
+				return v == null || v == undefined || v == "undefined";
+			}
+
 			function loadStoredSudoku(){
 
-				let moves = localStorage.getItem("saved_moves");
-				if(moves != null){
-					setStatus("moves",JSON.parse(moves));
-				}
+				let who = "";
 
-				let opt = localStorage.getItem("saved_gen_options");
-				if(opt != null){
-					setStatus("gen_options",JSON.parse(opt));
-				}
+				try{
+					who = "saved_moves";
+					let moves = localStorage.getItem("saved_moves");
+					if(!isNullOrUndefined(moves)){
+						setStatus("moves",JSON.parse(moves));
+					}
 
-				let helps = localStorage.getItem("saved_help_requested");
-				if(helps != null){
-					setStatus("help_requested",JSON.parse(helps));
-				}
+					who = "saved_gen_options";
+					let opt = localStorage.getItem("saved_gen_options");
+					if(!isNullOrUndefined(opt)){
+						setStatus("gen_options",JSON.parse(opt));
+					}
 
-				let counters = localStorage.getItem("saved_compl_numbers");
-				if(counters != null){
-					colorLimitedNumbers(JSON.parse(counters));
-				}
+					who = "saved_help_requested";
+					let helps = localStorage.getItem("saved_help_requested");
+					if(!isNullOrUndefined(helps)){
+						setStatus("help_requested",JSON.parse(helps));
+					}
 
-				let timer = localStorage.getItem("saved_timer_count");
-				if(timer != null){
-					setStatus("timer_count",JSON.parse(timer));
-					setStatus("timer", setInterval(timerCallback,1000));
-				}
+					who = "saved_compl_numbers";
+					let counters = localStorage.getItem("saved_compl_numbers");
+					if(!isNullOrUndefined(counters)){
+						colorLimitedNumbers(JSON.parse(counters));
+					}
 
-				let sol = localStorage.getItem("saved_solution");
-				if(sol != null){
-					setStatus("solution", JSON.parse(sol));
-					toggleHelpButton(true);
-				}
+					who = "saved_timer_count";
+					let timer = localStorage.getItem("saved_timer_count");
+					if(!isNullOrUndefined(timer)){
+						setStatus("timer_count",JSON.parse(timer));
+						setStatus("timer", setInterval(timerCallback,1000));
+					}
 
-				let values = localStorage.getItem("saved_sudoku");
-				if(values != null){
-					let parsed = JSON.parse(values);
+					who = "saved_solution";
+					let sol = localStorage.getItem("saved_solution");
+					if(!isNullOrUndefined(sol)){
+						setStatus("solution", JSON.parse(sol));
+						toggleHelpButton(true);
+					}
 
-					let v = getSudokuValues();
+					who = "saved_sudoku";
+					let values = localStorage.getItem("saved_sudoku");
+					if(!isNullOrUndefined(values)){
+						let parsed = JSON.parse(values);
 
-					for(let i = 0; i < parsed.length; i++){
+						let v = getSudokuValues();
 
-						v[i][1].value = parsed[i]["val"];
-						v[i][1].name = parsed[i]["name"];
+						for(let i = 0; i < parsed.length; i++){
 
-						if(parsed[i]["name"] == "locked"){
-							v[i][1].style.backgroundColor = STARTER_COLOR;
-							v[i][1].disabled = true;
+							v[i][1].value = parsed[i]["val"];
+							v[i][1].name = parsed[i]["name"];
+
+							if(parsed[i]["name"] == "locked"){
+								v[i][1].style.backgroundColor = STARTER_COLOR;
+								v[i][1].disabled = true;
+							}
 						}
 					}
 				}
+				catch(e){
+					console.log("load error",who);
+				}
+
 			}
 
 			function evidenceSameNumbers(number){
@@ -1255,7 +1274,7 @@
 				let n = document.getElementById("options_wrapper");
 
 				if(n.offsetLeft > 50){
-					b.style.top = "-5.85rem";
+					b.style.top = "-8.4rem";
 					h.style.width = "";
 				}else{
 					b.style.top = "";
@@ -1697,9 +1716,11 @@
 					.numeber_list_el{
 						display: inline-block;
 				    opacity: 0.2;
-				    width: 9%;
+				    width: 8%;
 				    text-align: center;
 						user-select: none;
+						cursor: pointer;
+						border: 1px solid;
 					}
 					.numbers_list_title{
 						font-size: 0.9rem;
@@ -1773,15 +1794,15 @@
 
 					<div class="numbers_list_wrap" id="numbers_list_wrap">
 						<div class="numbers_list_title"><span>Numbers completed</span><span class="sudoku-time" style="opacity:0;" id="timer"> - </span></div>
-						<div class="numeber_list_el">1</div>
-						<div class="numeber_list_el">2</div>
-						<div class="numeber_list_el">3</div>
-						<div class="numeber_list_el">4</div>
-						<div class="numeber_list_el">5</div>
-						<div class="numeber_list_el">6</div>
-						<div class="numeber_list_el">7</div>
-						<div class="numeber_list_el">8</div>
-						<div class="numeber_list_el">9</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">1</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">2</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">3</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">4</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">5</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">6</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">7</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">8</div>
+						<div class="numeber_list_el" onclick="numberDivClicked(this);">9</div>
 					</div>
 
 					<div class="buttons_wrapper" id="buttons_wrapper">
