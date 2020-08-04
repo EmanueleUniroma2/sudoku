@@ -694,7 +694,27 @@
 				return pattern["pattern"];
 			}
 
+			function pageLoading(toggle){
+
+				let s = document.getElementById("spinner_holder");
+				let t = document.getElementById("main_table");
+
+				if(toggle){
+					s.style.display = "block";
+					t.style.opacity = "0.1";
+				}else{
+					s.style.display = "";
+					t.style.opacity = "";
+				}
+
+			}
+
 			function generate(){
+				pageLoading(true);
+				setTimeout(generate_inner, 50);
+			}
+
+			function generate_inner(){
 
 				let visibles = +document.getElementById("select_for_cells").value;
 				let similarity = document.getElementById("select_for_spread").value;
@@ -787,7 +807,6 @@
 							}
 						}
 					}
-
 				}
 
 				markCellsAsNonStartes();
@@ -797,6 +816,8 @@
 				setUsedHelps(0);
 
 				storeGenOptions();
+
+				pageLoading(false);
 			}
 
 			function markCellsAsNonStartes() {
@@ -854,8 +875,14 @@
 				if(free){
 					closeTimer();
 					evidenceSameNumbers("");
-					solve();
-					setStatus("can_solve", false);
+
+					pageLoading(true);
+
+					setTimeout(function(){
+						solve();
+						setStatus("can_solve", false);
+						pageLoading(false);
+					},50);
 				}
 			}
 
@@ -1230,10 +1257,10 @@
 
 				if(sudokuIsValid(getSudokuValues())){
 					tb.style.backgroundColor = "rgb(106, 225, 76)";
-					tb.innerHTML = "SCHEME IS VALID!";
+					tb.innerHTML = "CORRECT";
 				}else{
 					tb.style.backgroundColor = "rgb(225, 76, 76)";
-					tb.innerHTML = "RULES BROKEN!";
+					tb.innerHTML = "WRONG";
 				}
 
 				tb.onclick = null;
@@ -1776,6 +1803,25 @@
 				    width: 15rem;
 				    margin-left: 1.5rem;
 					}
+					.spinner_holder{
+						margin-left: 42%;
+				    position: absolute;
+				    margin-top: 8rem;
+						display: none;
+					}
+					.spinner{
+						border: 0.5rem solid transparent;
+						border-bottom: 0.5rem solid blue;
+						width: 3rem;
+						height: 3rem;
+						border-radius: 50%;
+						animation: spin 0.5s linear infinite;
+						margin: 0 auto;
+					}
+					@keyframes spin {
+						from {transform: rotate(0deg);}
+						to {transform: rotate(360deg);}
+					}
 		</style>
 	</head>
 
@@ -1797,6 +1843,9 @@
 				</div>
 
 				<div id="main_table_wrap" class="main_table_wrap">
+					<div class="spinner_holder" id ="spinner_holder">
+						<div class="spinner"></div>
+					</div>
 	      	<table class="main_table" id="main_table"></table>
 					<input style="display:none;" type="text" id="last_input">
 				</div>
