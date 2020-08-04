@@ -715,9 +715,9 @@
 				setStatus("solution", solutionToJson(known_solution));
 
 				setStatus("moves", []);
-				localStorage.setItem("saved_moves", JSON.stringify([]));
+				localStorage.setItem("sudoku_page_saved_moves", JSON.stringify([]));
 
-				localStorage.setItem("saved_solution", JSON.stringify(solutionToJson(known_solution)));
+				localStorage.setItem("sudoku_page_saved_solution", JSON.stringify(solutionToJson(known_solution)));
 
 				let v = getSudokuValues();
 				let stop = false;
@@ -794,8 +794,7 @@
 
 				saveCurrentSudoku();
 
-				setStatus("help_requested",0);
-				localStorage.setItem("saved_help_requested", JSON.stringify(0));
+				setUsedHelps(0);
 
 				storeGenOptions();
 			}
@@ -873,7 +872,7 @@
 
 				let numbers = document.getElementsByClassName("numeber_list_el");
 
-				localStorage.setItem("saved_compl_numbers", JSON.stringify(counter));
+				localStorage.setItem("sudoku_page_saved_compl_numbers", JSON.stringify(counter));
 
 				for(let i = 0; i < numbers.length; i++){
 					if(counter[i] == 9){
@@ -937,7 +936,7 @@
 					diversity: getVariety()
 				};
 				setStatus("gen_options", genOptions);
-				localStorage.setItem("saved_gen_options",JSON.stringify(genOptions));
+				localStorage.setItem("sudoku_page_saved_gen_options",JSON.stringify(genOptions));
 			}
 
 			function save_current_win(){
@@ -1003,16 +1002,18 @@
 					moves.pop();
 				}
 				setStatus("moves", moves);
-				localStorage.setItem("saved_moves", JSON.stringify(moves));
+				localStorage.setItem("sudoku_page_saved_moves", JSON.stringify(moves));
 			}
 
 			function storeMove(element){
 				let moves = getStatus("moves");
 
-				moves.push([element.id, element.value]);
+				if(!isNullOrUndefined(moves)){
+					moves.push([element.id, element.value]);
 
-				setStatus("moves", moves);
-				localStorage.setItem("saved_moves", JSON.stringify(moves));
+					setStatus("moves", moves);
+					localStorage.setItem("sudoku_page_saved_moves", JSON.stringify(moves));
+				}
 			}
 
 			function cellEditedGoDown(outer) {
@@ -1039,7 +1040,7 @@
 					stats.push({ "val": v[i][1].value, "name": v[i][1].name });
 				}
 
-				localStorage.setItem("saved_sudoku", JSON.stringify(stats));
+				localStorage.setItem("sudoku_page_saved_sudoku", JSON.stringify(stats));
 			}
 
 			function solutionToJson(v){
@@ -1051,12 +1052,16 @@
 			}
 
 			function clearAllStoreds(){
-				localStorage.removeItem("saved_timer_count");
-				localStorage.removeItem("saved_solution");
-				localStorage.removeItem("saved_sudoku");
-				localStorage.removeItem("saved_compl_numbers");
-				localStorage.removeItem("saved_help_requested");
-				localStorage.removeItem("saved_moves");
+				let keys = Object.keys(localStorage);
+				for(let i = 0; i < keys.length; i++){
+
+					let key = keys[i];
+
+					if(key.startsWith("sudoku_page_")){
+						//console.log("clearing :", key);
+						localStorage.removeItem(key);
+					}
+				}
 			}
 
 			function isNullOrUndefined(v){
@@ -1068,46 +1073,46 @@
 				let who = "";
 
 				try{
-					who = "saved_moves";
-					let moves = localStorage.getItem("saved_moves");
+					who = "sudoku_page_saved_moves";
+					let moves = localStorage.getItem("sudoku_page_saved_moves");
 					if(!isNullOrUndefined(moves)){
 						setStatus("moves",JSON.parse(moves));
 					}
 
-					who = "saved_gen_options";
-					let opt = localStorage.getItem("saved_gen_options");
+					who = "sudoku_page_saved_gen_options";
+					let opt = localStorage.getItem("sudoku_page_saved_gen_options");
 					if(!isNullOrUndefined(opt)){
 						setStatus("gen_options",JSON.parse(opt));
 					}
 
-					who = "saved_help_requested";
-					let helps = localStorage.getItem("saved_help_requested");
+					who = "sudoku_page_saved_help_requested";
+					let helps = localStorage.getItem("sudoku_page_saved_help_requested");
 					if(!isNullOrUndefined(helps)){
-						setStatus("help_requested",JSON.parse(helps));
+						setUsedHelps(JSON.parse(helps));
 					}
 
-					who = "saved_compl_numbers";
-					let counters = localStorage.getItem("saved_compl_numbers");
+					who = "sudoku_page_saved_compl_numbers";
+					let counters = localStorage.getItem("sudoku_page_saved_compl_numbers");
 					if(!isNullOrUndefined(counters)){
 						colorLimitedNumbers(JSON.parse(counters));
 					}
 
-					who = "saved_timer_count";
-					let timer = localStorage.getItem("saved_timer_count");
+					who = "sudoku_page_saved_timer_count";
+					let timer = localStorage.getItem("sudoku_page_saved_timer_count");
 					if(!isNullOrUndefined(timer)){
 						setStatus("timer_count",JSON.parse(timer));
 						setStatus("timer", setInterval(timerCallback,1000));
 					}
 
-					who = "saved_solution";
-					let sol = localStorage.getItem("saved_solution");
+					who = "sudoku_page_saved_solution";
+					let sol = localStorage.getItem("sudoku_page_saved_solution");
 					if(!isNullOrUndefined(sol)){
 						setStatus("solution", JSON.parse(sol));
 						toggleHelpButton(true);
 					}
 
-					who = "saved_sudoku";
-					let values = localStorage.getItem("saved_sudoku");
+					who = "sudoku_page_saved_sudoku";
+					let values = localStorage.getItem("sudoku_page_saved_sudoku");
 					if(!isNullOrUndefined(values)){
 						let parsed = JSON.parse(values);
 
@@ -1225,10 +1230,10 @@
 
 				if(sudokuIsValid(getSudokuValues())){
 					tb.style.backgroundColor = "rgb(106, 225, 76)";
-					tb.innerHTML = "CORRECT!";
+					tb.innerHTML = "SCHEME IS VALID!";
 				}else{
 					tb.style.backgroundColor = "rgb(225, 76, 76)";
-					tb.innerHTML = "WRONG!";
+					tb.innerHTML = "RULES BROKEN!";
 				}
 
 				tb.onclick = null;
@@ -1326,6 +1331,13 @@
 				}
 			}
 
+			function setUsedHelps(val){
+				setStatus("help_requested",val);
+				localStorage.setItem("sudoku_page_saved_help_requested", JSON.stringify(val));
+
+				document.getElementById("used_helps_voice").innerHTML = val;
+			}
+
 			function addOneNumber() {
 
 				let solution = getStatus("solution");
@@ -1346,8 +1358,7 @@
 								v[i][1].style.backgroundColor = STARTER_COLOR;
 								v[i][1].disabled = true;
 
-								setStatus("help_requested",getStatus("help_requested")+1);
-								localStorage.setItem("saved_help_requested", getStatus("help_requested"));
+								setUsedHelps(getStatus("help_requested")+1);
 
 								evidenceSameNumbers("");
 
@@ -1386,7 +1397,7 @@
 
 			function startTimer() {
 				setStatus("timer_count",0);
-				localStorage.setItem("saved_timer_count", JSON.stringify(0));
+				localStorage.setItem("sudoku_page_saved_timer_count", JSON.stringify(0));
 
 				setStatus("timer", setInterval(timerCallback,1000));
 			}
@@ -1394,12 +1405,12 @@
 			function timerCallback(){
 				let current = getStatus("timer_count") + 1;
 				setStatus("timer_count",current);
-				localStorage.setItem("saved_timer_count", JSON.stringify(current));
+				localStorage.setItem("sudoku_page_saved_timer_count", JSON.stringify(current));
 
 				let lbl = "⏲ " + toHHMMSS(current).toString();
 
 				document.getElementById("timer").innerHTML = lbl;
-				document.getElementById("timer").style.opacity = "1";
+				document.getElementById("timer").style.opacity = "0.8";
 				document.getElementById("timer").style.fontWeight = "";
 			}
 
@@ -1512,7 +1523,7 @@
 				let infos = [
 					["DRAFT MODE","This button will enable the draft mode. In draft mode you can use some extra cells to take notes about the numbers you suspect to be correct. You can toggle draft mode any time without loosing its content. The content of draft mode is lost if the page is left or refreshed."],
 					["UNDO", "This button will reset the last edited cell to its previous value. It will not work for cells filled with the \"ADD ONE NUMBER\" button."],
-					["CHECK IS VALID", "This button will test if the current sudoku scheme is corrent. If it is, the button will turn green for a couple of seconds, if not will turn red."],
+					["TEST CORRECTNESS", "This button will test if the current sudoku scheme is corrent. If it is, the button will turn green for a couple of seconds, if not will turn red."],
 					["ADD ONE NUMBER","This button will add one extra correct number to the sudoku scheme. Please note that this action will priviledge empty cells, but there is a low chance this action might overwrite one of the numbers you wrote."],
 					["SOLVE ALL", "This button is used to display the solution for the current sudoku if it was generated by using the \"NEW SUDOKU\" feature. If the user prompted a new sudoku from scratch, this button will trigger the solver routine for the given sudoku."],
 					["CLEAR ALL", "This button will reset the current sudoku scheme and clear all the draft data."],
@@ -1793,7 +1804,7 @@
 				<div class="options_main_wrap" id="options_main_wrap">
 
 					<div class="numbers_list_wrap" id="numbers_list_wrap">
-						<div class="numbers_list_title"><span>Numbers completed</span><span class="sudoku-time" style="opacity:0;" id="timer"> - </span></div>
+						<div class="numbers_list_title"><span style="opacity:0.8;">Used Helps:</span><span class="sudoku-time" style="opacity:0;" id="timer"> - </span><span style="margin-left:0.5em;opacity:0.8;" id="used_helps_voice">0</span><br><br><div style="opacity:0.8;">Completed numbers</div></div>
 						<div class="numeber_list_el" onclick="numberDivClicked(this);">1</div>
 						<div class="numeber_list_el" onclick="numberDivClicked(this);">2</div>
 						<div class="numeber_list_el" onclick="numberDivClicked(this);">3</div>
@@ -1812,7 +1823,7 @@
 						<div class="button_mini button" id="solve_button" onclick="buttonSolve();">SOLVE ALL</div>
 						<div class="button_mini button" id="clear_button" onclick="clearSudoku();">CLEAR ALL</div>
 						<br>
-						<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">CHECK IS VALID</div>
+						<div class="button" id="test_button" onclick="testSudoku();" style="transition: background-color 0.5s linear">TEST CORRECTNESS</div>
 						<br>
 						<div class="button" id="help_button" onclick="addOneNumber();" style="opacity:0.3; cursor:unset;">ADD ONE NUMBER</div>
 
