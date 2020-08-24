@@ -844,6 +844,8 @@
 
 				setStatus("already_saved", false);
 
+				setStatus("did_use_solver", false);
+
 				closeTimer();
 
 				toggleHelpButton(false);
@@ -873,6 +875,10 @@
 
 				let free = getStatus("can_solve") != false;
 				if(free){
+					setStatus("did_use_solver", true);
+
+					toggleHelpButton(false);
+
 					closeTimer();
 					evidenceSameNumbers("");
 
@@ -967,6 +973,10 @@
 			}
 
 			function save_current_win(){
+
+				if(getStatus("did_use_solver")){
+					return;
+				}
 
 				let name = prompt("You won! Insert a nick name to save this win. (max 15 chars)");
 
@@ -1373,7 +1383,9 @@
 
 				let overwrite_filled_numbers = false;
 
-				if(solution != undefined){
+				let not_used_solver = getStatus("did_use_solver") != true;
+
+				if(solution != undefined && not_used_solver){
 
 					let prob = 90;
 
